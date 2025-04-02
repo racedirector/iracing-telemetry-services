@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package iracing.telemetry;
+import "google/protobuf/struct.proto";
+
+option java_package = "com.iracing.telemetry";
+option java_outer_classname = "TelemetryMessageProto";
+option java_multiple_files = true;
+option objc_class_prefix = "IR";
+
+message TelemetrySubscriptionRequest {
+  uint32 fps = 1;
+  repeated string keys = 2;
+}
+message GetTelemetryRequest { repeated string keys = 1; }
+message GetTelemetryResponse { google.protobuf.Struct telemetry = 1; }
+
+service Telemetry {
+  rpc SubscribeTelemetry(TelemetrySubscriptionRequest) returns (stream GetTelemetryResponse) {}
+  rpc GetTelemetry(GetTelemetryRequest) returns (GetTelemetryResponse) {}
+}
