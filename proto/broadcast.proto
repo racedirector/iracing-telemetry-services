@@ -203,7 +203,7 @@ message GetAvailableCamerasResponse {
   uint32 camera = 4;
 }
 
-service Server {
+service Broadcast {
   // A client-to-server RPC
   //
   // Returns the available camera groups and cameras per-group,

@@ -9,13 +9,34 @@ option java_multiple_files = true;
 option objc_class_prefix = "IR";
 
 message TelemetrySubscriptionRequest {
+  // The desired fps for the telemetry stream. Greater than 0 and less than 60.
   uint32 fps = 1;
+  // Supports any top-level key in the iRacing telemetry buffer.
   repeated string keys = 2;
 }
-message GetTelemetryRequest { repeated string keys = 1; }
-message GetTelemetryResponse { google.protobuf.Struct telemetry = 1; }
+message GetTelemetryRequest { 
+  // Supports any top-level key in the iRacing telemetry buffer.
+  repeated string keys = 1; 
+}
 
+message GetTelemetryResponse { 
+  // An object containing telemetry data.
+  google.protobuf.Struct telemetry = 1; 
+}
+
+// A service for interacting with iRacing telemetry.
 service Telemetry {
-  rpc SubscribeTelemetry(TelemetrySubscriptionRequest) returns (stream GetTelemetryResponse) {}
+  // A client-to-server streaming RPC
+  //
+  // The client sends a TelemetrySubscriptionRequest message to the server and
+  // gets a stream back at their requested FPS. Only changed values are sent
+  // over the stream after the initial message.
+  rpc SubscribeTelemetry(TelemetrySubscriptionRequest)
+      returns (stream GetTelemetryResponse) {}
+
+  // A server-to-client RPC
+  //
+  // The client sends a GetTelemetryRequest message to the server and gets a
+  // single GetTelemetryResponse message back.
   rpc GetTelemetry(GetTelemetryRequest) returns (GetTelemetryResponse) {}
 }

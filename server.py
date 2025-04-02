@@ -20,24 +20,18 @@ load_dotenv()
 
 class Environment:
   '''Environment variables for the server configuration.'''
-  host = os.getenv("HOST")
-  port = os.getenv("PORT")
+  port = os.getenv("PORT", "50051")
 
-  @classmethod
-  def api_url(cls):
-    return cls.host + ":" + cls.port
-  
 
 class Server:
   ir = IRSDK()
-  port = Environment.port
 
   def __init__(self, server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))):
-    broadcast_pb2_grpc.add_ServerServicer_to_server(BroadcastService(self.ir), server)
+    broadcast_pb2_grpc.add_BroadcastServicer_to_server(BroadcastService(self.ir), server)
     telemetry_pb2_grpc.add_TelemetryServicer_to_server(TelemetryService(self.ir), server)
 
     SERVICE_NAMES = (
-      broadcast_pb2.DESCRIPTOR.services_by_name['Server'].full_name,
+      broadcast_pb2.DESCRIPTOR.services_by_name['Broadcast'].full_name,
       telemetry_pb2.DESCRIPTOR.services_by_name['Telemetry'].full_name,
       reflection.SERVICE_NAME,
     )
@@ -47,9 +41,10 @@ class Server:
     self.server = server
 
   def start(self):
-    self.server.add_insecure_port('[::]:' + self.port)
+    port = Environment.port
+    self.server.add_insecure_port('[::]:' + port)
     self.server.start()
-    print(f"Server started on port {self.port}")
+    print(f"Server started on port {port}")
     self.server.wait_for_termination()
     
   def stop(self):

@@ -26,7 +26,7 @@ if _version_not_supported:
     )
 
 
-class ServerStub(object):
+class BroadcastStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -36,83 +36,83 @@ class ServerStub(object):
             channel: A grpc.Channel.
         """
         self.GetAvailableCameras = channel.unary_unary(
-                '/iracing.broadcast_message.Server/GetAvailableCameras',
+                '/iracing.broadcast_message.Broadcast/GetAvailableCameras',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=broadcast__pb2.GetAvailableCamerasResponse.FromString,
                 _registered_method=True)
         self.CameraSwitchPosition = channel.unary_unary(
-                '/iracing.broadcast_message.Server/CameraSwitchPosition',
+                '/iracing.broadcast_message.Broadcast/CameraSwitchPosition',
                 request_serializer=broadcast__pb2.CameraSwitchPositionRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.CameraSwitchPositionResponse.FromString,
                 _registered_method=True)
         self.CameraSwitchNumber = channel.unary_unary(
-                '/iracing.broadcast_message.Server/CameraSwitchNumber',
+                '/iracing.broadcast_message.Broadcast/CameraSwitchNumber',
                 request_serializer=broadcast__pb2.CameraSwitchNumberRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.CameraSwitchNumberResponse.FromString,
                 _registered_method=True)
         self.CameraSetState = channel.unary_unary(
-                '/iracing.broadcast_message.Server/CameraSetState',
+                '/iracing.broadcast_message.Broadcast/CameraSetState',
                 request_serializer=broadcast__pb2.CameraSetStateRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.CameraSetStateResponse.FromString,
                 _registered_method=True)
         self.ReplaySetPlaySpeed = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ReplaySetPlaySpeed',
+                '/iracing.broadcast_message.Broadcast/ReplaySetPlaySpeed',
                 request_serializer=broadcast__pb2.ReplaySetPlaySpeedRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ReplaySetPlaySpeedResponse.FromString,
                 _registered_method=True)
         self.ReplaySetPlayPosition = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ReplaySetPlayPosition',
+                '/iracing.broadcast_message.Broadcast/ReplaySetPlayPosition',
                 request_serializer=broadcast__pb2.ReplaySetPlayPositionRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ReplaySetPlayPositionResponse.FromString,
                 _registered_method=True)
         self.ReplaySearch = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ReplaySearch',
+                '/iracing.broadcast_message.Broadcast/ReplaySearch',
                 request_serializer=broadcast__pb2.ReplaySearchRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ReplaySearchResponse.FromString,
                 _registered_method=True)
         self.ReplaySetState = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ReplaySetState',
+                '/iracing.broadcast_message.Broadcast/ReplaySetState',
                 request_serializer=broadcast__pb2.ReplaySetStateRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ReplaySetStateResponse.FromString,
                 _registered_method=True)
         self.ReloadTextures = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ReloadTextures',
+                '/iracing.broadcast_message.Broadcast/ReloadTextures',
                 request_serializer=broadcast__pb2.ReloadTexturesRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ReloadTexturesResponse.FromString,
                 _registered_method=True)
         self.ChatCommand = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ChatCommand',
+                '/iracing.broadcast_message.Broadcast/ChatCommand',
                 request_serializer=broadcast__pb2.ChatCommandRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ChatCommandResponse.FromString,
                 _registered_method=True)
         self.PitCommand = channel.unary_unary(
-                '/iracing.broadcast_message.Server/PitCommand',
+                '/iracing.broadcast_message.Broadcast/PitCommand',
                 request_serializer=broadcast__pb2.PitCommandRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.PitCommandResponse.FromString,
                 _registered_method=True)
         self.TelemetryCommand = channel.unary_unary(
-                '/iracing.broadcast_message.Server/TelemetryCommand',
+                '/iracing.broadcast_message.Broadcast/TelemetryCommand',
                 request_serializer=broadcast__pb2.TelemetryCommandRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.TelemetryCommandResponse.FromString,
                 _registered_method=True)
         self.ForceFeedbackCommand = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ForceFeedbackCommand',
+                '/iracing.broadcast_message.Broadcast/ForceFeedbackCommand',
                 request_serializer=broadcast__pb2.ForceFeedbackCommandRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ForceFeedbackCommandResponse.FromString,
                 _registered_method=True)
         self.ReplaySearchSessionTime = channel.unary_unary(
-                '/iracing.broadcast_message.Server/ReplaySearchSessionTime',
+                '/iracing.broadcast_message.Broadcast/ReplaySearchSessionTime',
                 request_serializer=broadcast__pb2.ReplaySearchSessionTimeRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.ReplaySearchSessionTimeResponse.FromString,
                 _registered_method=True)
         self.VideoCapture = channel.unary_unary(
-                '/iracing.broadcast_message.Server/VideoCapture',
+                '/iracing.broadcast_message.Broadcast/VideoCapture',
                 request_serializer=broadcast__pb2.VideoCaptureRequest.SerializeToString,
                 response_deserializer=broadcast__pb2.VideoCaptureResponse.FromString,
                 _registered_method=True)
 
 
-class ServerServicer(object):
+class BroadcastServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetAvailableCameras(self, request, context):
@@ -252,7 +252,7 @@ class ServerServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_ServerServicer_to_server(servicer, server):
+def add_BroadcastServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetAvailableCameras': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAvailableCameras,
@@ -331,13 +331,13 @@ def add_ServerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'iracing.broadcast_message.Server', rpc_method_handlers)
+            'iracing.broadcast_message.Broadcast', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('iracing.broadcast_message.Server', rpc_method_handlers)
+    server.add_registered_method_handlers('iracing.broadcast_message.Broadcast', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class Server(object):
+class Broadcast(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -354,7 +354,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/GetAvailableCameras',
+            '/iracing.broadcast_message.Broadcast/GetAvailableCameras',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             broadcast__pb2.GetAvailableCamerasResponse.FromString,
             options,
@@ -381,7 +381,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/CameraSwitchPosition',
+            '/iracing.broadcast_message.Broadcast/CameraSwitchPosition',
             broadcast__pb2.CameraSwitchPositionRequest.SerializeToString,
             broadcast__pb2.CameraSwitchPositionResponse.FromString,
             options,
@@ -408,7 +408,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/CameraSwitchNumber',
+            '/iracing.broadcast_message.Broadcast/CameraSwitchNumber',
             broadcast__pb2.CameraSwitchNumberRequest.SerializeToString,
             broadcast__pb2.CameraSwitchNumberResponse.FromString,
             options,
@@ -435,7 +435,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/CameraSetState',
+            '/iracing.broadcast_message.Broadcast/CameraSetState',
             broadcast__pb2.CameraSetStateRequest.SerializeToString,
             broadcast__pb2.CameraSetStateResponse.FromString,
             options,
@@ -462,7 +462,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ReplaySetPlaySpeed',
+            '/iracing.broadcast_message.Broadcast/ReplaySetPlaySpeed',
             broadcast__pb2.ReplaySetPlaySpeedRequest.SerializeToString,
             broadcast__pb2.ReplaySetPlaySpeedResponse.FromString,
             options,
@@ -489,7 +489,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ReplaySetPlayPosition',
+            '/iracing.broadcast_message.Broadcast/ReplaySetPlayPosition',
             broadcast__pb2.ReplaySetPlayPositionRequest.SerializeToString,
             broadcast__pb2.ReplaySetPlayPositionResponse.FromString,
             options,
@@ -516,7 +516,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ReplaySearch',
+            '/iracing.broadcast_message.Broadcast/ReplaySearch',
             broadcast__pb2.ReplaySearchRequest.SerializeToString,
             broadcast__pb2.ReplaySearchResponse.FromString,
             options,
@@ -543,7 +543,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ReplaySetState',
+            '/iracing.broadcast_message.Broadcast/ReplaySetState',
             broadcast__pb2.ReplaySetStateRequest.SerializeToString,
             broadcast__pb2.ReplaySetStateResponse.FromString,
             options,
@@ -570,7 +570,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ReloadTextures',
+            '/iracing.broadcast_message.Broadcast/ReloadTextures',
             broadcast__pb2.ReloadTexturesRequest.SerializeToString,
             broadcast__pb2.ReloadTexturesResponse.FromString,
             options,
@@ -597,7 +597,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ChatCommand',
+            '/iracing.broadcast_message.Broadcast/ChatCommand',
             broadcast__pb2.ChatCommandRequest.SerializeToString,
             broadcast__pb2.ChatCommandResponse.FromString,
             options,
@@ -624,7 +624,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/PitCommand',
+            '/iracing.broadcast_message.Broadcast/PitCommand',
             broadcast__pb2.PitCommandRequest.SerializeToString,
             broadcast__pb2.PitCommandResponse.FromString,
             options,
@@ -651,7 +651,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/TelemetryCommand',
+            '/iracing.broadcast_message.Broadcast/TelemetryCommand',
             broadcast__pb2.TelemetryCommandRequest.SerializeToString,
             broadcast__pb2.TelemetryCommandResponse.FromString,
             options,
@@ -678,7 +678,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ForceFeedbackCommand',
+            '/iracing.broadcast_message.Broadcast/ForceFeedbackCommand',
             broadcast__pb2.ForceFeedbackCommandRequest.SerializeToString,
             broadcast__pb2.ForceFeedbackCommandResponse.FromString,
             options,
@@ -705,7 +705,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/ReplaySearchSessionTime',
+            '/iracing.broadcast_message.Broadcast/ReplaySearchSessionTime',
             broadcast__pb2.ReplaySearchSessionTimeRequest.SerializeToString,
             broadcast__pb2.ReplaySearchSessionTimeResponse.FromString,
             options,
@@ -732,7 +732,7 @@ class Server(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.broadcast_message.Server/VideoCapture',
+            '/iracing.broadcast_message.Broadcast/VideoCapture',
             broadcast__pb2.VideoCaptureRequest.SerializeToString,
             broadcast__pb2.VideoCaptureResponse.FromString,
             options,

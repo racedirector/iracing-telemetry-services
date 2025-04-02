@@ -26,7 +26,8 @@ if _version_not_supported:
 
 
 class TelemetryStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """A service for interacting with iRacing telemetry.
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -47,16 +48,26 @@ class TelemetryStub(object):
 
 
 class TelemetryServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """A service for interacting with iRacing telemetry.
+    """
 
     def SubscribeTelemetry(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """A client-to-server streaming RPC
+
+        The client sends a TelemetrySubscriptionRequest message to the server and
+        gets a stream back at their requested FPS. Only changed values are sent
+        over the stream after the initial message.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTelemetry(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """A server-to-client RPC
+
+        The client sends a GetTelemetryRequest message to the server and gets a
+        single GetTelemetryResponse message back.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -83,7 +94,8 @@ def add_TelemetryServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Telemetry(object):
-    """Missing associated documentation comment in .proto file."""
+    """A service for interacting with iRacing telemetry.
+    """
 
     @staticmethod
     def SubscribeTelemetry(request,
