@@ -40,11 +40,23 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
       context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
       return telemetry_pb2.GetTelemetryResponse()
 
+    '''
+    For a telemetry subscription, we create a new instance of pyirsdk
+    so the buffers can be frozen and unfrozen without affecting the main instance.
+    This is important because the main instance is used for other purposes
+    and we don't want to interfere with its operation.
+    '''
+    stream_ir = IRSDK()
+    if not stream_ir.startup():
+      context.set_details("Failed to connect to iRacing")
+      context.set_code(grpc.StatusCode.UNAVAILABLE)
+      return telemetry_pb2.GetTelemetryResponse()
+
     telemetry_cache = {}
-    while self.check_is_connected(context):
-      self.ir.freeze_var_buffer_latest()
-      telemetry = {key: self.ir[key] for key in request.keys if key not in telemetry_cache or telemetry_cache[key] != self.ir[key]}
-      self.ir.unfreeze_var_buffer_latest()
+    while stream_ir.is_connected and stream_ir.is_initialized:
+      stream_ir.freeze_var_buffer_latest()
+      telemetry = {key: stream_ir[key] for key in request.keys if key not in telemetry_cache or telemetry_cache[key] != stream_ir[key]}
+      stream_ir.unfreeze_var_buffer_latest()
 
       if telemetry: 
         struct = Struct()
@@ -54,6 +66,8 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
       # Update the cache and sleep
       sleep(1 / fps)
+
+    stream_ir.shutdown()
 
     return telemetry_pb2.GetTelemetryResponse()
   
