@@ -5,6 +5,7 @@ from time import sleep
 from google.protobuf.struct_pb2 import Struct
 from irsdk import IRSDK
 from iracing_service import IRacingService
+from typing import Iterable
 
 class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   """Servicer that manages telemetry data."""
@@ -12,7 +13,7 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
 
-  def GetTelemetry(self, request: telemetry_pb2.GetTelemetryRequest, context):
+  def GetTelemetry(self, request: telemetry_pb2.GetTelemetryRequest, context: grpc.ServicerContext) -> telemetry_pb2.GetTelemetryResponse:
     response = telemetry_pb2.GetTelemetryResponse()
     if self.check_is_connected(context):
       self.ir.freeze_var_buffer_latest()
@@ -25,7 +26,10 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
     return response
   
-  def SubscribeTelemetry(self, request: telemetry_pb2.TelemetrySubscriptionRequest, context: grpc.ServicerContext):
+  def RequestTelemetryStream(self, request_iterator: Iterable[telemetry_pb2.GetTelemetryRequest], context: grpc.ServicerContext) -> Iterable[telemetry_pb2.GetTelemetryResponse]:
+    return super().RequestTelemetryStream(request_iterator, context)
+  
+  def SubscribeTelemetryStream(self, request: telemetry_pb2.TelemetrySubscriptionRequest, context: grpc.ServicerContext) -> Iterable[telemetry_pb2.GetTelemetryResponse]:
     fps = request.fps
     if fps <= 0:
       context.set_details("FPS must be greater than 0")
@@ -51,6 +55,9 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
       context.set_details("Failed to connect to iRacing")
       context.set_code(grpc.StatusCode.UNAVAILABLE)
       return telemetry_pb2.GetTelemetryResponse()
+    
+    # Shutdown the connection to iRacing when the stream is closed.
+    context.add_callback(stream_ir.shutdown)
 
     telemetry_cache = {}
     while stream_ir.is_connected and stream_ir.is_initialized:
@@ -66,8 +73,6 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
       # Update the cache and sleep
       sleep(1 / fps)
-
-    stream_ir.shutdown()
 
     return telemetry_pb2.GetTelemetryResponse()
   

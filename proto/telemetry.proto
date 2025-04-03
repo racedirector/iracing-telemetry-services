@@ -8,17 +8,21 @@ option java_outer_classname = "TelemetryMessageProto";
 option java_multiple_files = true;
 option objc_class_prefix = "IR";
 
+// Message for creating a telemetry subscription.
 message TelemetrySubscriptionRequest {
   // The desired fps for the telemetry stream. Greater than 0 and less than 60.
   uint32 fps = 1;
   // Supports any top-level key in the iRacing telemetry buffer.
   repeated string keys = 2;
 }
+
+// Message for retrieving telemetry data.
 message GetTelemetryRequest { 
   // Supports any top-level key in the iRacing telemetry buffer.
   repeated string keys = 1; 
 }
 
+// Response message of telemetry data.
 message GetTelemetryResponse { 
   // An object containing telemetry data.
   google.protobuf.Struct telemetry = 1; 
@@ -26,17 +30,23 @@ message GetTelemetryResponse {
 
 // A service for interacting with iRacing telemetry.
 service Telemetry {
-  // A client-to-server streaming RPC
-  //
-  // The client sends a TelemetrySubscriptionRequest message to the server and
-  // gets a stream back at their requested FPS. Only changed values are sent
-  // over the stream after the initial message.
-  rpc SubscribeTelemetry(TelemetrySubscriptionRequest)
-      returns (stream GetTelemetryResponse) {}
-
   // A server-to-client RPC
   //
   // The client sends a GetTelemetryRequest message to the server and gets a
   // single GetTelemetryResponse message back.
   rpc GetTelemetry(GetTelemetryRequest) returns (GetTelemetryResponse) {}
+
+  // A client-to-server bidirectional streaming RPC
+  //
+  // The client sends a GetTelemetryRequest message each time it wants a new
+  // telemetry item. Useful when the client wants to control it's own cadence for iteration.
+  rpc RequestTelemetryStream(stream GetTelemetryRequest) returns (stream GetTelemetryResponse) {}
+
+  // A client-to-server streaming RPC
+  //
+  // The client sends a TelemetrySubscriptionRequest message to the server and
+  // gets a stream back at their requested FPS. Only changed values are sent
+  // over the stream after the initial message.
+  rpc SubscribeTelemetryStream(TelemetrySubscriptionRequest)
+      returns (stream GetTelemetryResponse) {}
 }

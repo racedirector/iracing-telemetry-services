@@ -35,14 +35,19 @@ class TelemetryStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SubscribeTelemetry = channel.unary_stream(
-                '/iracing.telemetry.Telemetry/SubscribeTelemetry',
-                request_serializer=telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
-                response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
-                _registered_method=True)
         self.GetTelemetry = channel.unary_unary(
                 '/iracing.telemetry.Telemetry/GetTelemetry',
                 request_serializer=telemetry__pb2.GetTelemetryRequest.SerializeToString,
+                response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
+                _registered_method=True)
+        self.RequestTelemetryStream = channel.stream_stream(
+                '/iracing.telemetry.Telemetry/RequestTelemetryStream',
+                request_serializer=telemetry__pb2.GetTelemetryRequest.SerializeToString,
+                response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
+                _registered_method=True)
+        self.SubscribeTelemetryStream = channel.unary_stream(
+                '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
+                request_serializer=telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
                 response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
 
@@ -50,17 +55,6 @@ class TelemetryStub(object):
 class TelemetryServicer(object):
     """A service for interacting with iRacing telemetry.
     """
-
-    def SubscribeTelemetry(self, request, context):
-        """A client-to-server streaming RPC
-
-        The client sends a TelemetrySubscriptionRequest message to the server and
-        gets a stream back at their requested FPS. Only changed values are sent
-        over the stream after the initial message.
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
 
     def GetTelemetry(self, request, context):
         """A server-to-client RPC
@@ -72,17 +66,43 @@ class TelemetryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RequestTelemetryStream(self, request_iterator, context):
+        """A client-to-server bidirectional streaming RPC
+
+        The client sends a GetTelemetryRequest message each time it wants a new
+        telemetry item. Useful when the client wants to control it's own cadence for iteration.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SubscribeTelemetryStream(self, request, context):
+        """A client-to-server streaming RPC
+
+        The client sends a TelemetrySubscriptionRequest message to the server and
+        gets a stream back at their requested FPS. Only changed values are sent
+        over the stream after the initial message.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_TelemetryServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SubscribeTelemetry': grpc.unary_stream_rpc_method_handler(
-                    servicer.SubscribeTelemetry,
-                    request_deserializer=telemetry__pb2.TelemetrySubscriptionRequest.FromString,
-                    response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
-            ),
             'GetTelemetry': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTelemetry,
                     request_deserializer=telemetry__pb2.GetTelemetryRequest.FromString,
+                    response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
+            ),
+            'RequestTelemetryStream': grpc.stream_stream_rpc_method_handler(
+                    servicer.RequestTelemetryStream,
+                    request_deserializer=telemetry__pb2.GetTelemetryRequest.FromString,
+                    response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
+            ),
+            'SubscribeTelemetryStream': grpc.unary_stream_rpc_method_handler(
+                    servicer.SubscribeTelemetryStream,
+                    request_deserializer=telemetry__pb2.TelemetrySubscriptionRequest.FromString,
                     response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
             ),
     }
@@ -96,33 +116,6 @@ def add_TelemetryServicer_to_server(servicer, server):
 class Telemetry(object):
     """A service for interacting with iRacing telemetry.
     """
-
-    @staticmethod
-    def SubscribeTelemetry(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_stream(
-            request,
-            target,
-            '/iracing.telemetry.Telemetry/SubscribeTelemetry',
-            telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
-            telemetry__pb2.GetTelemetryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
 
     @staticmethod
     def GetTelemetry(request,
@@ -140,6 +133,60 @@ class Telemetry(object):
             target,
             '/iracing.telemetry.Telemetry/GetTelemetry',
             telemetry__pb2.GetTelemetryRequest.SerializeToString,
+            telemetry__pb2.GetTelemetryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestTelemetryStream(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(
+            request_iterator,
+            target,
+            '/iracing.telemetry.Telemetry/RequestTelemetryStream',
+            telemetry__pb2.GetTelemetryRequest.SerializeToString,
+            telemetry__pb2.GetTelemetryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SubscribeTelemetryStream(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
+            telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
             telemetry__pb2.GetTelemetryResponse.FromString,
             options,
             channel_credentials,
