@@ -1,11 +1,11 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11
+FROM python:3.11-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Install make utility
-RUN apt-get update && apt-get install -y make && apt-get clean
+RUN apt-get update && apt-get install -y make git && apt-get clean
 
 # Copy the entire project into the container
 COPY . .
