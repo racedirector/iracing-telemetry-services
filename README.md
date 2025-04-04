@@ -6,13 +6,7 @@ Allows for messaging to the iRacing simulation, and querying for telmetry data.
 
 ## Running the server
 
-Clone the repo and create the environment file:
-
-```bash
-cp .env.template .env
-```
-
-Then, install the dependencies:
+Clone the repo and install the dependencies:
 
 ```bash
 make install
