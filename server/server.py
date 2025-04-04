@@ -1,4 +1,3 @@
-import os
 import grpc
 from concurrent import futures
 from grpc_reflection.v1alpha import reflection
@@ -13,7 +12,7 @@ from server.proto import telemetry_pb2
 class Server:
   ir = IRSDK()
 
-  def __init__(self, server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))):
+  def __init__(self, port = 50051, server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))):
     broadcast_pb2_grpc.add_BroadcastServicer_to_server(BroadcastService(self.ir), server)
     telemetry_pb2_grpc.add_TelemetryServicer_to_server(TelemetryService(self.ir), server)
 
@@ -26,12 +25,12 @@ class Server:
     reflection.enable_server_reflection(SERVICE_NAMES, server)
 
     self.server = server
+    self.port = port
 
   def start(self):
-    port = os.getenv("PORT", "50051")
-    self.server.add_insecure_port('[::]:' + port)
+    self.server.add_insecure_port('[::]:' + self.port)
     self.server.start()
-    print(f"Server started on port {port}")
+    print(f"Server started on port {self.port}")
     self.server.wait_for_termination()
     
   def stop(self):
