@@ -90,6 +90,11 @@ class BroadcastStub(object):
                 request_serializer=server_dot_proto_dot_broadcast__pb2.PitCommandRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_broadcast__pb2.PitCommandResponse.FromString,
                 _registered_method=True)
+        self.PitCommandStream = channel.stream_unary(
+                '/iracing.broadcast.Broadcast/PitCommandStream',
+                request_serializer=server_dot_proto_dot_broadcast__pb2.PitCommandRequest.SerializeToString,
+                response_deserializer=server_dot_proto_dot_broadcast__pb2.PitCommandResponse.FromString,
+                _registered_method=True)
         self.TelemetryCommand = channel.unary_unary(
                 '/iracing.broadcast.Broadcast/TelemetryCommand',
                 request_serializer=server_dot_proto_dot_broadcast__pb2.TelemetryCommandRequest.SerializeToString,
@@ -215,6 +220,15 @@ class BroadcastServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PitCommandStream(self, request_iterator, context):
+        """A client-to-server RPC
+
+        Sends mutliple pit commands and returns the service flags
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def TelemetryCommand(self, request, context):
         """A client-to-server RPC
 
@@ -306,6 +320,11 @@ def add_BroadcastServicer_to_server(servicer, server):
             ),
             'PitCommand': grpc.unary_unary_rpc_method_handler(
                     servicer.PitCommand,
+                    request_deserializer=server_dot_proto_dot_broadcast__pb2.PitCommandRequest.FromString,
+                    response_serializer=server_dot_proto_dot_broadcast__pb2.PitCommandResponse.SerializeToString,
+            ),
+            'PitCommandStream': grpc.stream_unary_rpc_method_handler(
+                    servicer.PitCommandStream,
                     request_deserializer=server_dot_proto_dot_broadcast__pb2.PitCommandRequest.FromString,
                     response_serializer=server_dot_proto_dot_broadcast__pb2.PitCommandResponse.SerializeToString,
             ),
@@ -625,6 +644,33 @@ class Broadcast(object):
             request,
             target,
             '/iracing.broadcast.Broadcast/PitCommand',
+            server_dot_proto_dot_broadcast__pb2.PitCommandRequest.SerializeToString,
+            server_dot_proto_dot_broadcast__pb2.PitCommandResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PitCommandStream(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(
+            request_iterator,
+            target,
+            '/iracing.broadcast.Broadcast/PitCommandStream',
             server_dot_proto_dot_broadcast__pb2.PitCommandRequest.SerializeToString,
             server_dot_proto_dot_broadcast__pb2.PitCommandResponse.FromString,
             options,
