@@ -28,7 +28,7 @@ class Server:
     self.port = port
 
   def start(self):
-    self.server.add_insecure_port('[::]:' + self.port)
+    self.server.add_insecure_port(f'[::]:{self.port}')
     self.server.start()
     print(f"Server started on port {self.port}")
     self.server.wait_for_termination()
