@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cserver/proto/telemetry.proto\x12\x0cserver.proto\x1a\x1cgoogle/protobuf/struct.proto\"9\n\x1cTelemetrySubscriptionRequest\x12\x0b\n\x03\x66ps\x18\x01 \x01(\r\x12\x0c\n\x04keys\x18\x02 \x03(\t\"#\n\x13GetTelemetryRequest\x12\x0c\n\x04keys\x18\x01 \x03(\t\"B\n\x14GetTelemetryResponse\x12*\n\ttelemetry\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct2\xbb\x02\n\tTelemetry\x12W\n\x0cGetTelemetry\x12!.server.proto.GetTelemetryRequest\x1a\".server.proto.GetTelemetryResponse\"\x00\x12\x65\n\x16RequestTelemetryStream\x12!.server.proto.GetTelemetryRequest\x1a\".server.proto.GetTelemetryResponse\"\x00(\x01\x30\x01\x12n\n\x18SubscribeTelemetryStream\x12*.server.proto.TelemetrySubscriptionRequest\x1a\".server.proto.GetTelemetryResponse\"\x00\x30\x01\x42\x35\n\x15\x63om.iracing.telemetryB\x15TelemetryMessageProtoP\x01\xa2\x02\x02IRb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cserver/proto/telemetry.proto\x12\x11iracing.telemetry\x1a\x1cgoogle/protobuf/struct.proto\"9\n\x1cTelemetrySubscriptionRequest\x12\x0b\n\x03\x66ps\x18\x01 \x01(\r\x12\x0c\n\x04keys\x18\x02 \x03(\t\"#\n\x13GetTelemetryRequest\x12\x0c\n\x04keys\x18\x01 \x03(\t\"B\n\x14GetTelemetryResponse\x12*\n\ttelemetry\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct2\xd9\x02\n\tTelemetry\x12\x61\n\x0cGetTelemetry\x12&.iracing.telemetry.GetTelemetryRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x12o\n\x16RequestTelemetryStream\x12&.iracing.telemetry.GetTelemetryRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00(\x01\x30\x01\x12x\n\x18SubscribeTelemetryStream\x12/.iracing.telemetry.TelemetrySubscriptionRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x30\x01\x42\x35\n\x15\x63om.iracing.telemetryB\x15TelemetryMessageProtoP\x01\xa2\x02\x02IRb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,12 +33,12 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'server.proto.telemetry_pb2'
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\025com.iracing.telemetryB\025TelemetryMessageProtoP\001\242\002\002IR'
-  _globals['_TELEMETRYSUBSCRIPTIONREQUEST']._serialized_start=76
-  _globals['_TELEMETRYSUBSCRIPTIONREQUEST']._serialized_end=133
-  _globals['_GETTELEMETRYREQUEST']._serialized_start=135
-  _globals['_GETTELEMETRYREQUEST']._serialized_end=170
-  _globals['_GETTELEMETRYRESPONSE']._serialized_start=172
-  _globals['_GETTELEMETRYRESPONSE']._serialized_end=238
-  _globals['_TELEMETRY']._serialized_start=241
-  _globals['_TELEMETRY']._serialized_end=556
+  _globals['_TELEMETRYSUBSCRIPTIONREQUEST']._serialized_start=81
+  _globals['_TELEMETRYSUBSCRIPTIONREQUEST']._serialized_end=138
+  _globals['_GETTELEMETRYREQUEST']._serialized_start=140
+  _globals['_GETTELEMETRYREQUEST']._serialized_end=175
+  _globals['_GETTELEMETRYRESPONSE']._serialized_start=177
+  _globals['_GETTELEMETRYRESPONSE']._serialized_end=243
+  _globals['_TELEMETRY']._serialized_start=246
+  _globals['_TELEMETRY']._serialized_end=591
 # @@protoc_insertion_point(module_scope)

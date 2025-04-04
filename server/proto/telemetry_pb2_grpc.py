@@ -36,17 +36,17 @@ class TelemetryStub(object):
             channel: A grpc.Channel.
         """
         self.GetTelemetry = channel.unary_unary(
-                '/server.proto.Telemetry/GetTelemetry',
+                '/iracing.telemetry.Telemetry/GetTelemetry',
                 request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
         self.RequestTelemetryStream = channel.stream_stream(
-                '/server.proto.Telemetry/RequestTelemetryStream',
+                '/iracing.telemetry.Telemetry/RequestTelemetryStream',
                 request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
         self.SubscribeTelemetryStream = channel.unary_stream(
-                '/server.proto.Telemetry/SubscribeTelemetryStream',
+                '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
                 request_serializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
@@ -107,9 +107,9 @@ def add_TelemetryServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'server.proto.Telemetry', rpc_method_handlers)
+            'iracing.telemetry.Telemetry', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('server.proto.Telemetry', rpc_method_handlers)
+    server.add_registered_method_handlers('iracing.telemetry.Telemetry', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -131,7 +131,7 @@ class Telemetry(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/server.proto.Telemetry/GetTelemetry',
+            '/iracing.telemetry.Telemetry/GetTelemetry',
             server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
             server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
             options,
@@ -158,7 +158,7 @@ class Telemetry(object):
         return grpc.experimental.stream_stream(
             request_iterator,
             target,
-            '/server.proto.Telemetry/RequestTelemetryStream',
+            '/iracing.telemetry.Telemetry/RequestTelemetryStream',
             server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
             server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
             options,
@@ -185,7 +185,7 @@ class Telemetry(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            '/server.proto.Telemetry/SubscribeTelemetryStream',
+            '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
             server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
             server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
             options,
