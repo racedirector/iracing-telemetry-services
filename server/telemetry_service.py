@@ -74,5 +74,6 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
       # Update the cache and sleep
       sleep(1 / fps)
 
+    context.set_details("iRacing disconnected")
     return telemetry_pb2.GetTelemetryResponse()
   
