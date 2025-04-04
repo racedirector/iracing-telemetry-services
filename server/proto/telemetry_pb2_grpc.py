@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import telemetry_pb2 as telemetry__pb2
+from server.proto import telemetry_pb2 as server_dot_proto_dot_telemetry__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
@@ -18,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in telemetry_pb2_grpc.py depends on'
+        + f' but the generated code in server/proto/telemetry_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -36,19 +36,19 @@ class TelemetryStub(object):
             channel: A grpc.Channel.
         """
         self.GetTelemetry = channel.unary_unary(
-                '/iracing.telemetry.Telemetry/GetTelemetry',
-                request_serializer=telemetry__pb2.GetTelemetryRequest.SerializeToString,
-                response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
+                '/server.proto.Telemetry/GetTelemetry',
+                request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
         self.RequestTelemetryStream = channel.stream_stream(
-                '/iracing.telemetry.Telemetry/RequestTelemetryStream',
-                request_serializer=telemetry__pb2.GetTelemetryRequest.SerializeToString,
-                response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
+                '/server.proto.Telemetry/RequestTelemetryStream',
+                request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
         self.SubscribeTelemetryStream = channel.unary_stream(
-                '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
-                request_serializer=telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
-                response_deserializer=telemetry__pb2.GetTelemetryResponse.FromString,
+                '/server.proto.Telemetry/SubscribeTelemetryStream',
+                request_serializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
 
 
@@ -92,24 +92,24 @@ def add_TelemetryServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetTelemetry': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTelemetry,
-                    request_deserializer=telemetry__pb2.GetTelemetryRequest.FromString,
-                    response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
+                    request_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
             ),
             'RequestTelemetryStream': grpc.stream_stream_rpc_method_handler(
                     servicer.RequestTelemetryStream,
-                    request_deserializer=telemetry__pb2.GetTelemetryRequest.FromString,
-                    response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
+                    request_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
             ),
             'SubscribeTelemetryStream': grpc.unary_stream_rpc_method_handler(
                     servicer.SubscribeTelemetryStream,
-                    request_deserializer=telemetry__pb2.TelemetrySubscriptionRequest.FromString,
-                    response_serializer=telemetry__pb2.GetTelemetryResponse.SerializeToString,
+                    request_deserializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'iracing.telemetry.Telemetry', rpc_method_handlers)
+            'server.proto.Telemetry', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('iracing.telemetry.Telemetry', rpc_method_handlers)
+    server.add_registered_method_handlers('server.proto.Telemetry', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -131,9 +131,9 @@ class Telemetry(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/iracing.telemetry.Telemetry/GetTelemetry',
-            telemetry__pb2.GetTelemetryRequest.SerializeToString,
-            telemetry__pb2.GetTelemetryResponse.FromString,
+            '/server.proto.Telemetry/GetTelemetry',
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -158,9 +158,9 @@ class Telemetry(object):
         return grpc.experimental.stream_stream(
             request_iterator,
             target,
-            '/iracing.telemetry.Telemetry/RequestTelemetryStream',
-            telemetry__pb2.GetTelemetryRequest.SerializeToString,
-            telemetry__pb2.GetTelemetryResponse.FromString,
+            '/server.proto.Telemetry/RequestTelemetryStream',
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -185,9 +185,9 @@ class Telemetry(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
-            telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
-            telemetry__pb2.GetTelemetryResponse.FromString,
+            '/server.proto.Telemetry/SubscribeTelemetryStream',
+            server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
             options,
             channel_credentials,
             insecure,

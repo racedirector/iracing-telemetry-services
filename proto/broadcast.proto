@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package iracing.broadcast_message;
+package server.proto;
 import public "google/protobuf/empty.proto";
 
 option java_package = "com.iracing.broadcast";
