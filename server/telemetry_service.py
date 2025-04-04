@@ -1,10 +1,10 @@
 import grpc
-import proto.telemetry_pb2_grpc as telemetry_pb2_grpc
-import proto.telemetry_pb2 as telemetry_pb2
+from server.proto import telemetry_pb2_grpc
+from server.proto import telemetry_pb2
 from time import sleep
 from google.protobuf.struct_pb2 import Struct
 from irsdk import IRSDK
-from iracing_service import IRacingService
+from server.iracing_service import IRacingService
 from typing import Iterable
 
 class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):

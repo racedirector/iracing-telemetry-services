@@ -1,4 +1,4 @@
-import proto.broadcast_pb2 as broadcast_pb2
+from server.proto import broadcast_pb2
 from irsdk import CameraState, RpyPosMode, RpyStateMode, RpySrchMode, ChatCommandMode, PitCommandMode, TelemCommandMode, FFBCommandMode, VideoCaptureMode
 
 def get_camera_state_from_request(request: broadcast_pb2.CameraSetStateRequest) -> CameraState:

@@ -1,27 +1,14 @@
-from concurrent import futures
-import logging
-import os, sys
-
-proto_dir = os.path.join(os.path.dirname(__file__), 'proto')
-sys.path.insert(0, proto_dir)
-
-from dotenv import load_dotenv
+import os
 import grpc
+from concurrent import futures
 from grpc_reflection.v1alpha import reflection
 from irsdk import IRSDK
-from broadcast_service import BroadcastService
-from telemetry_service import TelemetryService
-import proto.broadcast_pb2_grpc as broadcast_pb2_grpc
-import proto.broadcast_pb2 as broadcast_pb2
-import proto.telemetry_pb2_grpc as telemetry_pb2_grpc
-import proto.telemetry_pb2 as telemetry_pb2
-
-load_dotenv()
-
-class Environment:
-  '''Environment variables for the server configuration.'''
-  port = os.getenv("PORT", "50051")
-
+from server.broadcast_service import BroadcastService
+from server.telemetry_service import TelemetryService
+from server.proto import broadcast_pb2_grpc
+from server.proto import broadcast_pb2
+from server.proto import telemetry_pb2_grpc
+from server.proto import telemetry_pb2
 
 class Server:
   ir = IRSDK()
@@ -41,7 +28,7 @@ class Server:
     self.server = server
 
   def start(self):
-    port = Environment.port
+    port = os.getenv("PORT", "50051")
     self.server.add_insecure_port('[::]:' + port)
     self.server.start()
     print(f"Server started on port {port}")
@@ -52,11 +39,3 @@ class Server:
     self.server.stop(0)
     print("Server stopped")
 
-if __name__ == '__main__':
-  logging.basicConfig()
-  server = Server()
-
-  try:
-    server.start()
-  except KeyboardInterrupt:
-    server.stop()
