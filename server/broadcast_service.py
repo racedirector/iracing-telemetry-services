@@ -171,6 +171,33 @@ class BroadcastService(IRacingService, broadcast_pb2_grpc.BroadcastServicer):
     
     return broadcast_pb2.PitCommandResponse()
   
+  '''
+  Iterate over the stream of pit commands and execute them one-by-one.
+  Respond with a single PitCommandResponse after all commands have been executed.
+  '''
+  def PitCommandStream(self, request_iterator, context):
+    if self.check_is_connected(context):
+      for request in request_iterator:
+        self.ir.pit_command(
+          pit_command_mode=get_pit_command_mode_from_request(request),
+          var=request.value
+        )
+
+      self.ir.freeze_var_buffer_latest()
+      response = broadcast_pb2.PitCommandResponse(
+        service_flags=self.ir['PitSvFlags'],
+        fuel=self.ir['PitSvFuel'],
+        lf_pressure=self.ir['PitSvLFP'],
+        rf_pressure=self.ir['PitSvRFP'],
+        lr_pressure=self.ir['PitSvLRP'],
+        rr_pressure=self.ir['PitSvRRP'],
+        tire_compound=self.ir['PitSvTireCompound'],
+      )
+      self.ir.unfreeze_var_buffer_latest()
+      return response
+
+    return broadcast_pb2.PitCommandResponse()
+
   def TelemetryCommand(self, request: broadcast_pb2.TelemetryCommandRequest, context):
     if self.check_is_connected(context):
       self.ir.telem_command(
