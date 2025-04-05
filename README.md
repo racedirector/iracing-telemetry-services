@@ -40,3 +40,8 @@ pyinstaller telemetry-server.spec
 ```
 
 Check the `dist` directory for the generated .exe file.
+
+## Docker
+
+Docker implementation is intended to bundle the server with an `envoy` proxy server
+to enable gRPC-web support. This allows for easy integration with web applications. The implmentation is not yet complete.
