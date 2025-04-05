@@ -5,14 +5,14 @@ import os
 
 block_cipher = None
 
-# Make sure PyInstaller knows about any hidden imports (grpc, protobuf reflection, etc.)
-hidden_imports = collect_submodules('grpc') + collect_submodules('google')
-
 a = Analysis(
     ['server/__main__.py'],
     pathex=[os.path.abspath('.')],
     binaries=[],
-    hiddenimports=hidden_imports,
+    hiddenimports=[
+        'encodings',
+        'codecs',
+    ],
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
@@ -27,7 +27,7 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=True,
+    exclude_binaries=False,
     name='telemetry-server',
     debug=False,
     bootloader_ignore_signals=False,
@@ -40,6 +40,7 @@ coll = COLLECT(
     exe,
     a.binaries,
     a.zipfiles,
+    a.datas,
     strip=False,
     upx=True,
     name='telemetry-server'
