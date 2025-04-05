@@ -11,3 +11,6 @@ protoc:
 
 run:
 	python -m server
+
+spec:
+	pyi-makespec --onefile server/__main__.py --name=telemetry-server
