@@ -8,16 +8,10 @@ block_cipher = None
 # Make sure PyInstaller knows about any hidden imports (grpc, protobuf reflection, etc.)
 hidden_imports = collect_submodules('grpc') + collect_submodules('google')
 
-# Add any .proto files or data files if needed (example below)
-datas = [
-    ('protos/*.proto', 'protos')  # adjust if your .proto files are elsewhere
-]
-
 a = Analysis(
     ['server/__main__.py'],
     pathex=[os.path.abspath('.')],
     binaries=[],
-    datas=datas,
     hiddenimports=hidden_imports,
     hookspath=[],
     runtime_hooks=[],
@@ -46,7 +40,6 @@ coll = COLLECT(
     exe,
     a.binaries,
     a.zipfiles,
-    a.datas,
     strip=False,
     upx=True,
     name='telemetry-server'
