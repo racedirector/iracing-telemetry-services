@@ -19,8 +19,15 @@ jobs:
           python-version: "3.x"
 
       - name: Build Executable
+        id: build_exe
         uses: Martin005/pyinstaller-action@v1.2.0
         with:
           spec: "telemetry-server.spec"
           requirements: "requirements.txt"
           upload_exe_with_name: "iracing-telemetry-server.exe"
+
+      - name: Upload Executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: iracing-telemetry-server
+          path: ${{ steps.build_exe.outputs.executable_path }}
