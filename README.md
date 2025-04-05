@@ -29,3 +29,14 @@ make protoc
 To generate the gRPC code.
 
 It's recommended to use postman to test the gRPC server. ~~You can use the `postman` directory to import the collection and environment.~~ (Coming soon). The server supports reflection, so you can use any gRPC client to test the server. The `grpcurl` tool is also a good option for testing gRPC servers from the command line.
+
+## Build .exe
+
+Generate a pyinstaller spec file and then build the .exe:
+
+```bash
+make spec
+pyinstaller telemetry-server.spec
+```
+
+Check the `dist` directory for the generated .exe file.
