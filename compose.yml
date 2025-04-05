@@ -8,4 +8,4 @@ services:
     ports:
       - "10000:10000"
     volumes:
-      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - ./envoy.yml:/etc/envoy/envoy.yaml
