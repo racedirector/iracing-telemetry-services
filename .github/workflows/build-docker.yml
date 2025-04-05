@@ -19,7 +19,7 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile.linux
+          file: ./Dockerfile
           platforms: linux/amd64
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/iracing-telemetry-grpc:linux
@@ -29,6 +29,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          driver: docker-container
+          driver-opts: image=moby/buildkit:v0.8.3 # specify a compatible version
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io

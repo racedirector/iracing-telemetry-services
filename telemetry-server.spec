@@ -14,7 +14,7 @@ datas = [
 ]
 
 a = Analysis(
-    ['server/main.py'],
+    ['server/__main__.py'],
     pathex=[os.path.abspath('.')],
     binaries=[],
     datas=datas,
