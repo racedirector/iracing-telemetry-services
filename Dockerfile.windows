@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/windows/python:3.11
+
+# Set working directory
+WORKDIR /app
+
+# Install Chocolatey, Git, and Make
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
+
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+  Invoke-WebRequest 'https://community.chocolatey.org/install.ps1' -UseBasicParsing -OutFile install.ps1; \
+  .\install.ps1; \
+  choco install -y git make; \
+  Remove-Item install.ps1
+
+# Reset shell to default (CMD)
+SHELL ["cmd", "/S", "/C"]
+
+# Copy project files
+COPY . .
+
+# Install dependencies using your Makefile
+RUN make install
+
+# Expose gRPC server port
+EXPOSE 50051
+
+# Run the server using Makefile
+CMD ["make", "run"]

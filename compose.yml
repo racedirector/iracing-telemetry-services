@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "50051:50051"
+  envoy:
+    image: envoyproxy/envoy:tools-dev
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+    volumes:
+      - ./envoy.yml:/etc/envoy/envoy.yaml
