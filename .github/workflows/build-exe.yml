@@ -29,7 +29,9 @@ jobs:
           pip install pyinstaller
 
       - name: Build Executable
-        run: pyinstaller telemetry-server.spec
+        run: |
+          make spec
+          pyinstaller telemetry-server.spec
 
       - name: Upload Executable
         uses: actions/upload-artifact@v4
