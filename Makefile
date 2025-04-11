@@ -14,3 +14,10 @@ run:
 
 spec:
 	pyi-makespec --onefile server/__main__.py --name=telemetry-server
+
+load-test:
+	ghz --insecure \
+		--proto ./proto/telemetry.proto \
+		--call iracing.telemetry.Telemetry \
+		-d '{ "keys": ["LapDistPct", "CarIdxLapDistPct", "CarIdxSessionFlags", "CpuUsageFG", "CpuUsageBG"], "fps": 20 }' \
+		0.0.0.0:50051
