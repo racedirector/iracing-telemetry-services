@@ -1,0 +1,14 @@
+{
+  "keys": [
+    "LapDistPct",
+    "CarIdxLapDistPct",
+    "CarIdxSessionFlags",
+    "CarIdxRPM",
+    "CarIdxSpeed",
+    "CarIdxTrackSurface",
+    "CarIdxTrackSurfaceMaterial",
+    "CpuUsageFG",
+    "CpuUsageBG"
+  ],
+  "fps": 20
+}

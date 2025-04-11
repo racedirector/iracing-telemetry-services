@@ -1,0 +1,32 @@
+{
+  "keys": [
+    "LapDistPct",
+    "CarIdxBestLapNum",
+    "CarIdxBestLapTime",
+    "CarIdxClass",
+    "CarIdxClassPosition",
+    "CarIdxEstTime",
+    "CarIdxF2Time",
+    "CarIdxFastRepairsUsed",
+    "CarIdxGear",
+    "CarIdxLap",
+    "CarIdxLapCompleted",
+    "CarIdxLapDistPct",
+    "CarIdxLastLapTime",
+    "CarIdxOnPitRoad",
+    "CarIdxP2P_Count",
+    "CarIdxP2P_Status",
+    "CarIdxPaceFlags",
+    "CarIdxPaceLine",
+    "CarIdxPaceRow",
+    "CarIdxPosition",
+    "CarIdxSessionFlags",
+    "CarIdxRPM",
+    "CarIdxSteer",
+    "CarIdxSpeed",
+    "CarIdxTrackSurface",
+    "CarIdxTrackSurfaceMaterial",
+    "CpuUsageFG",
+    "CpuUsageBG"
+  ]
+}

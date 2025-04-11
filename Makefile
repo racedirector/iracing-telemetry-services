@@ -15,11 +15,21 @@ run:
 spec:
 	pyi-makespec --onefile server/__main__.py --name=telemetry-server
 
-load-test:
-	ghz --insecure \
-		--proto ./proto/telemetry.proto \
-		--call iracing.telemetry.Telemetry \
+load-test-subscription:
+	ghz --insecure --proto ./proto/telemetry.proto \
+		--call iracing.telemetry.Telemetry/SubscribeTelemetryStream \
+		-D ./load-test/subscription.json \
 		-t 0 \
-		-z 20m \
-		-d '{ "keys": ["LapDistPct", "CarIdxLapDistPct", "CarIdxSessionFlags", "CpuUsageFG", "CpuUsageBG"], "fps": 20 }' \
+		-z 30s \
+		-c 100 \
+		0.0.0.0:50051
+
+load-test-telemetry:
+	ghz --insecure --proto ./proto/telemetry.proto \
+		--call iracing.telemetry.Telemetry/GetTelemetry \
+		-D ./load-test/get-telemetry.json \
+		-t 0 \
+		-z 30s \
+		-c 100 \
+		-n 10000 \
 		0.0.0.0:50051
