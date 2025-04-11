@@ -19,5 +19,7 @@ load-test:
 	ghz --insecure \
 		--proto ./proto/telemetry.proto \
 		--call iracing.telemetry.Telemetry \
+		-t 0 \
+		-z 20m \
 		-d '{ "keys": ["LapDistPct", "CarIdxLapDistPct", "CarIdxSessionFlags", "CpuUsageFG", "CpuUsageBG"], "fps": 20 }' \
 		0.0.0.0:50051
