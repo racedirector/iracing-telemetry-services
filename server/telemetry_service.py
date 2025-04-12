@@ -1,9 +1,10 @@
 import grpc
+import struct
 from server.proto import telemetry_pb2_grpc
 from server.proto import telemetry_pb2
 from time import sleep
 from google.protobuf.struct_pb2 import Struct
-from irsdk import IRSDK
+from irsdk import IRSDK, VAR_TYPE_MAP
 from server.iracing_service import IRacingService
 from typing import Iterable
 
@@ -12,6 +13,36 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
+
+  def DumpTelemetry(self, request, context):
+    if self.check_is_connected(context):
+      print("Dumping telemetry data...")
+      session_info_cache = {}
+      telemetry_cache = {}
+      self.ir.freeze_var_buffer_latest()
+
+      # Get all the headers from the buffer
+      for key in self.ir._var_headers_dict:
+        var_header = self.ir._var_headers_dict[key]
+        var_buf_latest = self.ir._var_buffer_latest
+        res = struct.unpack_from(
+          VAR_TYPE_MAP[var_header.type] * var_header.count,
+          var_buf_latest.get_memory(),
+          var_buf_latest.buf_offset + var_header.offset)
+        
+        telemetry_cache[key] = res[0] if var_header.count == 1 else list(res)
+
+      session_info_cache = self.ir.__session_info_dict
+
+      self.ir.unfreeze_var_buffer_latest()
+
+      print("SessionInfo:", session_info_cache)
+      print("Telemetry:", telemetry_cache)
+      struct = Struct()
+      struct.update(session_info_cache)
+      struct.update(telemetry_cache)
+
+      return telemetry_pb2.GetTelemetryResponse(telemetry=struct)
 
   def GetTelemetry(self, request: telemetry_pb2.GetTelemetryRequest, context: grpc.ServicerContext) -> telemetry_pb2.GetTelemetryResponse:
     response = telemetry_pb2.GetTelemetryResponse()

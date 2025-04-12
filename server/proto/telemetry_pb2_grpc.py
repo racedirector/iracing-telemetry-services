@@ -3,6 +3,7 @@
 import grpc
 import warnings
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from server.proto import telemetry_pb2 as server_dot_proto_dot_telemetry__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
@@ -35,6 +36,11 @@ class TelemetryStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.DumpTelemetry = channel.unary_unary(
+                '/iracing.telemetry.Telemetry/DumpTelemetry',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
+                _registered_method=True)
         self.GetTelemetry = channel.unary_unary(
                 '/iracing.telemetry.Telemetry/GetTelemetry',
                 request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
@@ -55,6 +61,16 @@ class TelemetryStub(object):
 class TelemetryServicer(object):
     """A service for interacting with iRacing telemetry.
     """
+
+    def DumpTelemetry(self, request, context):
+        """A server-to-client RPC
+
+        The client sends an Empty message to the server and receives all telemetry
+        data in the current buffer.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def GetTelemetry(self, request, context):
         """A server-to-client RPC
@@ -90,6 +106,11 @@ class TelemetryServicer(object):
 
 def add_TelemetryServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'DumpTelemetry': grpc.unary_unary_rpc_method_handler(
+                    servicer.DumpTelemetry,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
+            ),
             'GetTelemetry': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTelemetry,
                     request_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.FromString,
@@ -116,6 +137,33 @@ def add_TelemetryServicer_to_server(servicer, server):
 class Telemetry(object):
     """A service for interacting with iRacing telemetry.
     """
+
+    @staticmethod
+    def DumpTelemetry(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/iracing.telemetry.Telemetry/DumpTelemetry',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
 
     @staticmethod
     def GetTelemetry(request,
