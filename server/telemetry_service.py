@@ -43,6 +43,8 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
       struct.update(telemetry_cache)
 
       return telemetry_pb2.GetTelemetryResponse(telemetry=struct)
+    
+    return telemetry_pb2.GetTelemetryResponse()
 
   def GetTelemetry(self, request: telemetry_pb2.GetTelemetryRequest, context: grpc.ServicerContext) -> telemetry_pb2.GetTelemetryResponse:
     response = telemetry_pb2.GetTelemetryResponse()
