@@ -1,12 +1,26 @@
+import datetime
 import grpc
+import json
 import struct
-from server.proto import telemetry_pb2_grpc
-from server.proto import telemetry_pb2
-from time import sleep
+import yaml
 from google.protobuf.struct_pb2 import Struct
-from irsdk import IRSDK, VAR_TYPE_MAP
+from irsdk import IRSDK, VAR_TYPE_MAP, YAML_CODE_PAGE
 from server.iracing_service import IRacingService
+from server.proto import telemetry_pb2
+from server.proto import telemetry_pb2_grpc
+from time import sleep
 from typing import Iterable
+from yaml.reader import Reader as YamlReader
+
+try:
+    from yaml.cyaml import CSafeLoader as YamlSafeLoader
+except ImportError:
+    from yaml import SafeLoader as YamlSafeLoader
+
+def DateEncoder(obj):
+    """JSON encoder for datetime objects."""
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
 
 class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   """Servicer that manages telemetry data."""
@@ -17,15 +31,17 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   def DumpTelemetry(self, request, context):
     response = telemetry_pb2.GetTelemetryResponse()
     if self.check_is_connected(context):
-      print("Dumping telemetry data...")
-      session_info_cache = {}
+      response_data = Struct()
       telemetry_cache = {}
-      self.ir.freeze_var_buffer_latest()
 
+      self.ir.freeze_var_buffer_latest()
+      session_binary = self.ir._shared_mem[self.ir._header.session_info_offset:self.ir._header.session_info_len].rstrip(b'\x00').decode(YAML_CODE_PAGE)
+      
       # Get all the headers from the buffer
       for key in self.ir._var_headers_dict:
         var_header = self.ir._var_headers_dict[key]
         var_buf_latest = self.ir._var_buffer_latest
+        print(var_header.type, VAR_TYPE_MAP[var_header.type])
         res = struct.unpack_from(
           VAR_TYPE_MAP[var_header.type] * var_header.count,
           var_buf_latest.get_memory(),
@@ -34,10 +50,16 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
         telemetry_cache[key] = res[0] if var_header.count == 1 else list(res)
 
       self.ir.unfreeze_var_buffer_latest()
-      telemetry = Struct()
-      telemetry.update(telemetry_cache)
 
-      response.telemetry = telemetry
+      # Convert the binary session info to a JSON dictionary
+      session_yml = yaml.load(session_binary, Loader=YamlSafeLoader)
+      session_json_string = json.dumps(session_yml, indent=2, default=DateEncoder)
+      session_json = json.loads(session_json_string)
+
+      # Update the response
+      response_data.update(session_json)
+      response_data.update(telemetry_cache)
+      response.telemetry = response_data
     
     return response
 
