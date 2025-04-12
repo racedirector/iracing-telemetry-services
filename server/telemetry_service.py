@@ -15,6 +15,7 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
     super().__init__(ir)
 
   def DumpTelemetry(self, request, context):
+    response = telemetry_pb2.GetTelemetryResponse()
     if self.check_is_connected(context):
       print("Dumping telemetry data...")
       session_info_cache = {}
@@ -32,19 +33,13 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
         
         telemetry_cache[key] = res[0] if var_header.count == 1 else list(res)
 
-      session_info_cache = self.ir.__session_info_dict
-
       self.ir.unfreeze_var_buffer_latest()
+      telemetry = Struct()
+      telemetry.update(telemetry_cache)
 
-      print("SessionInfo:", session_info_cache)
-      print("Telemetry:", telemetry_cache)
-      struct = Struct()
-      struct.update(session_info_cache)
-      struct.update(telemetry_cache)
-
-      return telemetry_pb2.GetTelemetryResponse(telemetry=struct)
+      response.telemetry = telemetry
     
-    return telemetry_pb2.GetTelemetryResponse()
+    return response
 
   def GetTelemetry(self, request: telemetry_pb2.GetTelemetryRequest, context: grpc.ServicerContext) -> telemetry_pb2.GetTelemetryResponse:
     response = telemetry_pb2.GetTelemetryResponse()
