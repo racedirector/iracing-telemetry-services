@@ -27,6 +27,16 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
+    self.GetTelemetryTypes(None, None)
+
+  def GetTelemetryTypes(self, request, context):
+    if self.check_is_connected(context):
+      for key in self.ir._var_headers_dict:
+        var_header = self.ir._var_headers_dict[key]
+        var_type = VAR_TYPE_MAP[var_header.type]
+        var_count = var_header.count
+
+        print(f"Key: {key}, Type: {var_type}, Count: {var_count}")
 
   def DumpTelemetry(self, request, context):
     response = telemetry_pb2.GetTelemetryResponse()
