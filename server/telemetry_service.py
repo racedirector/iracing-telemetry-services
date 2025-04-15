@@ -31,7 +31,8 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
 
-  def GetTelemetryTypes(self, request, context):
+  def GetTelemetryTypes(self, request: telemetry_pb2.GetTelemetryTypesRequest, context):
+    response = telemetry_pb2.GetTelemetryTypesResponse()
     # Check if the connection is valid
     if self.check_is_connected(context):
       self.ir.freeze_var_buffer_latest()
@@ -51,11 +52,16 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
       # Unfreeze the buffer
       self.ir.unfreeze_var_buffer_latest()
 
-      return {
+      response_data = Struct()
+      response_data.update({
         'types': self.telemetry_type_cache,
         'version': self.ir._header.version if self.connected else 0,
         '$refs': ENUM_TYPE_CACHE
-      }
+      })
+
+      response.types = response_data
+
+    return response
 
   def DumpTelemetry(self, request, context):
     response = telemetry_pb2.GetTelemetryResponse()

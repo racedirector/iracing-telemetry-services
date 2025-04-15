@@ -27,7 +27,7 @@ from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 from google.protobuf.empty_pb2 import *
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cserver/proto/telemetry.proto\x12\x11iracing.telemetry\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\"9\n\x1cTelemetrySubscriptionRequest\x12\x0b\n\x03\x66ps\x18\x01 \x01(\r\x12\x0c\n\x04keys\x18\x02 \x03(\t\"#\n\x13GetTelemetryRequest\x12\x0c\n\x04keys\x18\x01 \x03(\t\"B\n\x14GetTelemetryResponse\x12*\n\ttelemetry\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct2\xad\x03\n\tTelemetry\x12R\n\rDumpTelemetry\x12\x16.google.protobuf.Empty\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x12\x61\n\x0cGetTelemetry\x12&.iracing.telemetry.GetTelemetryRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x12o\n\x16RequestTelemetryStream\x12&.iracing.telemetry.GetTelemetryRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00(\x01\x30\x01\x12x\n\x18SubscribeTelemetryStream\x12/.iracing.telemetry.TelemetrySubscriptionRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x30\x01\x42\x35\n\x15\x63om.iracing.telemetryB\x15TelemetryMessageProtoP\x01\xa2\x02\x02IRP\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cserver/proto/telemetry.proto\x12\x11iracing.telemetry\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\"9\n\x1cTelemetrySubscriptionRequest\x12\x0b\n\x03\x66ps\x18\x01 \x01(\r\x12\x0c\n\x04keys\x18\x02 \x03(\t\"#\n\x13GetTelemetryRequest\x12\x0c\n\x04keys\x18\x01 \x03(\t\"B\n\x14GetTelemetryResponse\x12*\n\ttelemetry\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\"\x1a\n\x18GetTelemetryTypesRequest\"C\n\x19GetTelemetryTypesResponse\x12&\n\x05types\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct2\x9f\x04\n\tTelemetry\x12p\n\x11GetTelemetryTypes\x12+.iracing.telemetry.GetTelemetryTypesRequest\x1a,.iracing.telemetry.GetTelemetryTypesResponse\"\x00\x12R\n\rDumpTelemetry\x12\x16.google.protobuf.Empty\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x12\x61\n\x0cGetTelemetry\x12&.iracing.telemetry.GetTelemetryRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x12o\n\x16RequestTelemetryStream\x12&.iracing.telemetry.GetTelemetryRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00(\x01\x30\x01\x12x\n\x18SubscribeTelemetryStream\x12/.iracing.telemetry.TelemetrySubscriptionRequest\x1a\'.iracing.telemetry.GetTelemetryResponse\"\x00\x30\x01\x42\x35\n\x15\x63om.iracing.telemetryB\x15TelemetryMessageProtoP\x01\xa2\x02\x02IRP\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -41,6 +41,10 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_GETTELEMETRYREQUEST']._serialized_end=204
   _globals['_GETTELEMETRYRESPONSE']._serialized_start=206
   _globals['_GETTELEMETRYRESPONSE']._serialized_end=272
-  _globals['_TELEMETRY']._serialized_start=275
-  _globals['_TELEMETRY']._serialized_end=704
+  _globals['_GETTELEMETRYTYPESREQUEST']._serialized_start=274
+  _globals['_GETTELEMETRYTYPESREQUEST']._serialized_end=300
+  _globals['_GETTELEMETRYTYPESRESPONSE']._serialized_start=302
+  _globals['_GETTELEMETRYTYPESRESPONSE']._serialized_end=369
+  _globals['_TELEMETRY']._serialized_start=372
+  _globals['_TELEMETRY']._serialized_end=915
 # @@protoc_insertion_point(module_scope)
