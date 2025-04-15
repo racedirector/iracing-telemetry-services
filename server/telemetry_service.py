@@ -39,15 +39,16 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
       # For each variable header in the buffer, get the type and count
       # and store it in the cache
-      for key in self.ir._var_headers_dict:
-        if key in self.telemetry_type_cache:
-          continue
+      if self.telemetry_type_cache.__len__() != self.ir._var_headers_dict.__len__():
+        for key in self.ir._var_headers_dict:
+          if key in self.telemetry_type_cache:
+            continue
 
-        var_header = self.ir._var_headers_dict[key]
-        var_type = VAR_TYPE_MAP[var_header.type]
-        var_count = var_header.count
-        type_string = string_for_var(key, var_type)
-        self.telemetry_type_cache[key] = f'Array<{type_string}>[{var_count}]' if var_count > 1 else type_string
+          var_header = self.ir._var_headers_dict[key]
+          var_type = VAR_TYPE_MAP[var_header.type]
+          var_count = var_header.count
+          type_string = string_for_var(key, var_type)
+          self.telemetry_type_cache[key] = f'Array<{type_string}>[{var_count}]' if var_count > 1 else type_string
 
       # Unfreeze the buffer
       self.ir.unfreeze_var_buffer_latest()

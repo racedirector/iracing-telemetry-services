@@ -18,6 +18,16 @@ Run the server:
 make run
 ```
 
+## Services
+
+### Telemetry Service
+
+Service for retrieving telemetry data from iRacing.
+
+### Broadcast Service
+
+Service for sending "broadcast messages" to the iRacing simulation.
+
 ## Development
 
 Make changes to the `proto` files in the `proto` directory and run:

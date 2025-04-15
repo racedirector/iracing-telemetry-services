@@ -18,13 +18,15 @@ class IRacingService:
       print("iRacing connected")
       self.connected = True
 
-  def is_connected(self):
-    self.check_connection()
     return self.connected
+
+  def is_connected(self):
+    return self.check_connection()
   
   def check_is_connected(self, context: grpc.ServicerContext):
-      if not self.is_connected():
+      is_connected = self.is_connected()
+      if not is_connected:
         context.set_details("Not connected to iRacing")
-        context.set_code(grpc.StatusCode.UNAVAILABLE)
+        context.set_code(grpc.StatusCode.INTERNAL)
 
-      return self.connected
+      return is_connected
