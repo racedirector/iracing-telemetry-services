@@ -8,6 +8,7 @@ from irsdk import IRSDK, VAR_TYPE_MAP, YAML_CODE_PAGE
 from server.iracing_service import IRacingService
 from server.proto import telemetry_pb2
 from server.proto import telemetry_pb2_grpc
+from server.type_util import ENUM_TYPE_CACHE, string_for_var
 from time import sleep
 from typing import Iterable
 from yaml.reader import Reader as YamlReader
@@ -25,18 +26,36 @@ def DateEncoder(obj):
 class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   """Servicer that manages telemetry data."""
 
+  telemetry_type_cache = {}
+
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
-    self.GetTelemetryTypes(None, None)
 
   def GetTelemetryTypes(self, request, context):
+    # Check if the connection is valid
     if self.check_is_connected(context):
+      self.ir.freeze_var_buffer_latest()
+
+      # For each variable header in the buffer, get the type and count
+      # and store it in the cache
       for key in self.ir._var_headers_dict:
+        if key in self.telemetry_type_cache:
+          continue
+
         var_header = self.ir._var_headers_dict[key]
         var_type = VAR_TYPE_MAP[var_header.type]
         var_count = var_header.count
+        type_string = string_for_var(key, var_type)
+        self.telemetry_type_cache[key] = f'Array<{type_string}>[{var_count}]' if var_count > 1 else type_string
 
-        print(f"Key: {key}, Type: {var_type}, Count: {var_count}")
+      # Unfreeze the buffer
+      self.ir.unfreeze_var_buffer_latest()
+
+      return {
+        'types': self.telemetry_type_cache,
+        'version': self.ir._header.version if self.connected else 0,
+        '$refs': ENUM_TYPE_CACHE
+      }
 
   def DumpTelemetry(self, request, context):
     response = telemetry_pb2.GetTelemetryResponse()
@@ -51,7 +70,6 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
       for key in self.ir._var_headers_dict:
         var_header = self.ir._var_headers_dict[key]
         var_buf_latest = self.ir._var_buffer_latest
-        print(var_header.type, VAR_TYPE_MAP[var_header.type])
         res = struct.unpack_from(
           VAR_TYPE_MAP[var_header.type] * var_header.count,
           var_buf_latest.get_memory(),
