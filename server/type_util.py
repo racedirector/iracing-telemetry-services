@@ -58,6 +58,23 @@ ENUM_TYPE_CACHE = {
     'TrackWetness': get_class_attributes(irsdk.TrackWetness),
 }
 
+ENUM_CLASS_CACHE = {
+      # Known bitwise flags in the iRacing SDK
+    'EngineWarnings': irsdk.EngineWarnings,
+    'Flags': irsdk.Flags,
+    'CameraState': irsdk.CameraState,
+    'PitServiceFlags': irsdk.PitSvFlags,
+    'PaceFlags': irsdk.PaceFlags,
+      # Known enums in the iRacing SDK
+    'TrackLocation': irsdk.TrkLoc,
+    'TrackSurface': irsdk.TrkSurf,
+    'SessionState': irsdk.SessionState,
+    'PitServiceStatus': irsdk.PitSvStatus,
+    'PaceMode': irsdk.PaceMode,
+    'CarLeftRight': irsdk.CarLeftRight,
+    'TrackWetness': irsdk.TrackWetness,
+}
+
 def string_for_var(key, var_type):
   # Assert the var type exists in the VAR_TYPE_MAP
   if var_type not in irsdk.VAR_TYPE_MAP:
@@ -76,3 +93,66 @@ def string_for_var(key, var_type):
     return 'double'
   elif var_type == 'I':
     return f'Ref<{BITWISE_TELEMETRY_MAP[key]}>' if key in BITWISE_TELEMETRY_MAP else 'bitwise'
+
+# Returns JSON schema for a given type.
+def json_for_type(type):
+  return {
+    "type": type
+  }
+
+# Returns a JSON schema format for a type with a fixed length.
+def array_for_var(type, count):
+  return {
+    "type": "array",
+    "items": json_for_type(type),
+    "minItems": count,
+    "maxItems": count,
+  }
+
+# Returns a JSON schema format for a reference with an optional description.
+def array_for_ref(ref, description=None):
+  return {
+    "type": "array",
+    "items": { "$ref": f"#/$defs/{ref}" }
+  } | ({ "description": description } if description else {})
+
+# Get's the JSON schema for a variable given the type and count.
+def json_schema_for_var(key, type, count):
+  if type == 'c':
+    return array_for_var("string", count) if count > 1 else json_for_type("string")
+  if type == '?':
+    return array_for_var("boolean", count) if count > 1 else json_for_type("boolean")
+  if type == 'i':
+    if key in ENUM_TELEMETRY_MAP:
+      enum_type = ENUM_TELEMETRY_MAP[key]
+      return array_for_ref(enum_type) if count > 1 else {
+        "$ref": f"#/$defs/{enum_type}"
+      }
+    else:
+      return array_for_var("integer", count) if count > 1 else json_for_type("integer")
+  if type == 'f' or type == 'd':
+    return array_for_var("number", count) if count > 1 else json_for_type("number")
+  if type == 'I':
+    if key in BITWISE_TELEMETRY_MAP:
+      bitwise_type = BITWISE_TELEMETRY_MAP[key]
+      return array_for_ref(bitwise_type, f"Bitwise field for `{bitwise_type}`")
+
+# Get's a JSON schema representation for an enum, optionally formatting as a 
+# hex string.
+def json_schema_for_irsdk_enum(enum_class, as_hex):
+  return {
+    "type": "integer",
+    "enum": sorted([
+      hex(getattr(enum_class, attr)) if as_hex else getattr(enum_class, attr) 
+      for attr in dir(enum_class) 
+      if not attr.startswith('__') and not callable(getattr(enum_class, attr))
+    ])
+  }
+
+# Returns a dict of IRSDK enum type names as the keys and the JSON schema of 
+# the enum as values.
+def json_schema_for_irsdk_enums():
+  return { 
+    key: json_schema_for_irsdk_enum(cls, as_hex=key in BITWISE_TELEMETRY_MAP)
+    for key, cls in ENUM_CLASS_CACHE.items() 
+  }

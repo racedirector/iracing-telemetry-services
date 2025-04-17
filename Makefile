@@ -24,6 +24,12 @@ load-test-subscription:
 		-c 100 \
 		0.0.0.0:50051
 
+load-test-schema-struct:
+	ghz --insecure --proto ./proto/telemetry.proto --call iracing.telemetry.Telemetry/GetTelemetryJSONSchema -t 0 -z 30s 0.0.0.0:50051
+
+load-test-schema-string:
+	ghz --insecure --proto ./proto/telemetry.proto --call iracing.telemetry.Telemetry/GetTelemetryJSONSchemaString -t 0 -z 30s 0.0.0.0:50051
+
 load-test-telemetry:
 	ghz --insecure --proto ./proto/telemetry.proto \
 		--call iracing.telemetry.Telemetry/GetTelemetry \

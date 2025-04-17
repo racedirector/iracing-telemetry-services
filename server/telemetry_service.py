@@ -8,10 +8,11 @@ from irsdk import IRSDK, VAR_TYPE_MAP, YAML_CODE_PAGE
 from server.iracing_service import IRacingService
 from server.proto import telemetry_pb2
 from server.proto import telemetry_pb2_grpc
-from server.type_util import ENUM_TYPE_CACHE, string_for_var
+from server.type_util import ENUM_TYPE_CACHE, json_schema_for_irsdk_enums, string_for_var, json_schema_for_var
 from time import sleep
 from typing import Iterable
 from yaml.reader import Reader as YamlReader
+from genson import SchemaBuilder
 
 try:
     from yaml.cyaml import CSafeLoader as YamlSafeLoader
@@ -27,9 +28,61 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   """Servicer that manages telemetry data."""
 
   telemetry_type_cache = {}
+  json_schema = {}
 
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
+
+  def check_connection(self):
+    was_connected = self.connected
+    is_connected = super().check_connection()
+
+    if is_connected and not was_connected:
+      properties = {}
+      self.ir.freeze_var_buffer_latest()
+
+      for key in self.ir._var_headers_dict:
+          var_header = self.ir._var_headers_dict[key]
+          var_type = VAR_TYPE_MAP[var_header.type]
+          var_count = var_header.count
+
+          properties[key] = json_schema_for_var(key, var_type, var_count)
+
+      self.ir.unfreeze_var_buffer_latest()
+
+      builder = SchemaBuilder()
+      builder.add_schema({
+        "$schema": "http://json-schema.org/schema#",
+        "title": "Telemetry",
+        "description": "Telemetry from the iRacing Simulation.",
+        "type": "object",
+        "properties": properties,
+        "$defs": json_schema_for_irsdk_enums()
+      })
+
+      self.json_schema = builder.to_schema()
+    elif not is_connected and was_connected:
+      # iRacing disconnected, clear the schema
+      self.json_schema = None
+
+
+    return is_connected
+
+  def GetTelemetryJSONSchema(self, request, context):
+    response = telemetry_pb2.GetTelemetryJSONSchemaResponse()
+    if self.check_is_connected(context):
+      schema = Struct()
+      schema.update(self.json_schema)
+      response.schema = schema
+
+    return response
+    
+  def GetTelemetryJSONSchemaString(self, request, context):
+    response = telemetry_pb2.GetTelemetryJSONSchemaStringResponse()
+    if self.check_is_connected(context):
+      response.schema = json.dumps(self.json_schema)
+
+    return response
 
   def GetTelemetryTypes(self, request: telemetry_pb2.GetTelemetryTypesRequest, context):
     response = telemetry_pb2.GetTelemetryTypesResponse()
