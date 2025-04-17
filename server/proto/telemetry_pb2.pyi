@@ -27,33 +27,3 @@ class GetTelemetryResponse(_message.Message):
     TELEMETRY_FIELD_NUMBER: _ClassVar[int]
     telemetry: _struct_pb2.Struct
     def __init__(self, telemetry: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
-
-class GetTelemetryTypesRequest(_message.Message):
-    __slots__ = ()
-    def __init__(self) -> None: ...
-
-class GetTelemetryTypesResponse(_message.Message):
-    __slots__ = ("types",)
-    TYPES_FIELD_NUMBER: _ClassVar[int]
-    types: _struct_pb2.Struct
-    def __init__(self, types: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
-
-class GetTelemetryJSONSchemaRequest(_message.Message):
-    __slots__ = ()
-    def __init__(self) -> None: ...
-
-class GetTelemetryJSONSchemaResponse(_message.Message):
-    __slots__ = ("telemetry", "session")
-    TELEMETRY_FIELD_NUMBER: _ClassVar[int]
-    SESSION_FIELD_NUMBER: _ClassVar[int]
-    telemetry: _struct_pb2.Struct
-    session: _struct_pb2.Struct
-    def __init__(self, telemetry: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ..., session: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
-
-class GetTelemetryJSONSchemaStringResponse(_message.Message):
-    __slots__ = ("telemetry", "session")
-    TELEMETRY_FIELD_NUMBER: _ClassVar[int]
-    SESSION_FIELD_NUMBER: _ClassVar[int]
-    telemetry: str
-    session: str
-    def __init__(self, telemetry: _Optional[str] = ..., session: _Optional[str] = ...) -> None: ...
