@@ -9,6 +9,9 @@ class IRacingService:
   def __init__(self, ir: IRSDK):
     self.ir = ir
 
+    if ir.is_initialized and ir.is_connected:
+      self.connected = True
+
   def check_connection(self):
     if self.connected and not (self.ir.is_initialized and self.ir.is_connected):
       print("iRacing disconnected")

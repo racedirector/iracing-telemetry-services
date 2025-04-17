@@ -18,6 +18,61 @@ class SchemaService(IRacingService):
   session_json_schema = {}
   telemetry_json_schema = {}
 
+  def __init__(self, ir):
+    super().__init__(ir)
+    if ir.is_initialized and ir.is_connected:
+      self.__update_schema()
+
+  def __update_schema(self):
+    properties = {}
+
+    # Freeze the buffer for reading...
+    self.ir.freeze_var_buffer_latest()
+
+    # Get the Session string binary.
+    session_binary = self.ir._shared_mem[self.ir._header.session_info_offset:self.ir._header.session_info_len].rstrip(b'\x00').decode(YAML_CODE_PAGE)
+
+    # Get all known keys from the iRacing header.
+    for key in self.ir._var_headers_dict:
+        var_header = self.ir._var_headers_dict[key]
+        var_type = VAR_TYPE_MAP[var_header.type]
+        var_count = var_header.count
+
+        # Get a JSON Schema representation of the key based on the type and count.
+        properties[key] = json_schema_for_var(key, var_type, var_count)
+
+    # Unfreeze the buffer to continue parsing
+    self.ir.unfreeze_var_buffer_latest()
+
+    # Convert the binary session info to a JSON dictionary
+    session_yml = yaml.load(session_binary, Loader=YamlSafeLoader)
+    session_json_string = json.dumps(session_yml, indent=2, default=DateEncoder)
+    session_json = json.loads(session_json_string)
+    
+    session_schema = SchemaBuilder()
+    session_schema.add_schema({
+      "$schema": "http://json-schema.org/schema#",
+      "title": "Session",
+      "description": "The session string from the iRacing Simulation.",
+      "type": "object",
+    })
+
+    session_schema.add_object(session_json)
+
+    self.session_json_schema = session_schema.to_schema()
+
+    telemetry_schema = SchemaBuilder()
+    telemetry_schema.add_schema({
+      "$schema": "http://json-schema.org/schema#",
+      "title": "Telemetry",
+      "description": "Telemetry from the iRacing Simulation.",
+      "type": "object",
+      "properties": properties,
+      "$defs": json_schema_for_irsdk_enums()
+    })
+
+    self.telemetry_json_schema = telemetry_schema.to_schema()
+
   # Override check_connection to check if a new connection was made.
   # If so, fetch a JSON Schema representation of all known properties
   # in the telemetry
@@ -26,54 +81,7 @@ class SchemaService(IRacingService):
     is_connected = super().check_connection()
 
     if is_connected and not was_connected:
-      properties = {}
-
-      # Freeze the buffer for reading...
-      self.ir.freeze_var_buffer_latest()
-
-      # Get the Session string binary.
-      session_binary = self.ir._shared_mem[self.ir._header.session_info_offset:self.ir._header.session_info_len].rstrip(b'\x00').decode(YAML_CODE_PAGE)
-
-      # Get all known keys from the iRacing header.
-      for key in self.ir._var_headers_dict:
-          var_header = self.ir._var_headers_dict[key]
-          var_type = VAR_TYPE_MAP[var_header.type]
-          var_count = var_header.count
-
-          # Get a JSON Schema representation of the key based on the type and count.
-          properties[key] = json_schema_for_var(key, var_type, var_count)
-
-      # Unfreeze the buffer to continue parsing
-      self.ir.unfreeze_var_buffer_latest()
-
-      # Convert the binary session info to a JSON dictionary
-      session_yml = yaml.load(session_binary, Loader=YamlSafeLoader)
-      session_json_string = json.dumps(session_yml, indent=2, default=DateEncoder)
-      session_json = json.loads(session_json_string)
-      
-      session_schema = SchemaBuilder()
-      session_schema.add_schema({
-        "$schema": "http://json-schema.org/schema#",
-        "title": "Session",
-        "description": "The session string from the iRacing Simulation.",
-        "type": "object",
-      })
-
-      session_schema.add_object(session_json)
-
-      self.session_json_schema = session_schema.to_schema()
-
-      telemetry_schema = SchemaBuilder()
-      telemetry_schema.add_schema({
-        "$schema": "http://json-schema.org/schema#",
-        "title": "Telemetry",
-        "description": "Telemetry from the iRacing Simulation.",
-        "type": "object",
-        "properties": properties,
-        "$defs": json_schema_for_irsdk_enums()
-      })
-
-      self.telemetry_json_schema = telemetry_schema.to_schema()
+      self.__update_schema()
     elif not is_connected and was_connected:
       # iRacing disconnected, clear the schema
       self.telemetry_json_schema = None

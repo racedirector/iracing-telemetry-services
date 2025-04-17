@@ -9,10 +9,15 @@ def main(
     port=os.getenv("PORT", 50051),
     test_file=None):
   logging.basicConfig()
-  
+
+  iracing = IRSDK()
+  if (test_file is not None):
+    print("Starting iRacing with test file: %s" % test_file)  
+    iracing.startup(test_file=test_file)
+
   server = Server(
     port=int(port),
-    iracing=IRSDK(test_file=test_file)
+    iracing=iracing,
   )
 
   try:

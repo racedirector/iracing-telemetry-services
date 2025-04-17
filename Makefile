@@ -12,6 +12,9 @@ protoc:
 run:
 	python -m server
 
+test-static-state:
+	python -m server --test __assets__/telemetry.bin
+
 spec:
 	pyi-makespec --onefile server/__main__.py --name=telemetry-server
 
