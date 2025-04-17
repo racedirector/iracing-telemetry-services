@@ -27,7 +27,9 @@ if _version_not_supported:
 
 
 class BroadcastStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """
+    A service for interacting with iRacing broadcast features.
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -118,10 +120,13 @@ class BroadcastStub(object):
 
 
 class BroadcastServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """
+    A service for interacting with iRacing broadcast features.
+    """
 
     def GetAvailableCameras(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Returns the available camera groups and cameras per-group,
         as well as the current camera information.
@@ -131,7 +136,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CameraSwitchPosition(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Switches the camera to a new position. Returns the new camera position.
         """
@@ -140,7 +146,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CameraSwitchNumber(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Switches the camera to a new number. Returns the new camera position.
         """
@@ -149,7 +156,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CameraSetState(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sets the state of the camera
         """
@@ -158,7 +166,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ReplaySetPlaySpeed(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sets the play speed of the replay
         """
@@ -167,7 +176,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ReplaySetPlayPosition(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sets the play position of the replay
         """
@@ -176,7 +186,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ReplaySearch(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Searches the replay
         """
@@ -185,7 +196,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ReplaySetState(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sets the state of the replay
         """
@@ -194,7 +206,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ReloadTextures(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Reloads the textures
         """
@@ -203,7 +216,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ChatCommand(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sends a chat command
         """
@@ -212,7 +226,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PitCommand(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sends a pit command
         """
@@ -221,7 +236,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PitCommandStream(self, request_iterator, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sends mutliple pit commands and returns the service flags
         """
@@ -230,7 +246,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def TelemetryCommand(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sends a telemetry command
         """
@@ -239,7 +256,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ForceFeedbackCommand(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Sends a force feedback command
         """
@@ -248,7 +266,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ReplaySearchSessionTime(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Searches the replay by session time
         """
@@ -257,7 +276,8 @@ class BroadcastServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def VideoCapture(self, request, context):
-        """A client-to-server RPC
+        """
+        A client-to-server RPC
 
         Captures video
         """
@@ -357,7 +377,9 @@ def add_BroadcastServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Broadcast(object):
-    """Missing associated documentation comment in .proto file."""
+    """
+    A service for interacting with iRacing broadcast features.
+    """
 
     @staticmethod
     def GetAvailableCameras(request,

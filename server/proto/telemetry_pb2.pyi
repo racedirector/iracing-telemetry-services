@@ -37,3 +37,19 @@ class GetTelemetryTypesResponse(_message.Message):
     TYPES_FIELD_NUMBER: _ClassVar[int]
     types: _struct_pb2.Struct
     def __init__(self, types: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
+
+class GetTelemetryJSONSchemaRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class GetTelemetryJSONSchemaResponse(_message.Message):
+    __slots__ = ("schema",)
+    SCHEMA_FIELD_NUMBER: _ClassVar[int]
+    schema: _struct_pb2.Struct
+    def __init__(self, schema: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
+
+class GetTelemetryJSONSchemaStringResponse(_message.Message):
+    __slots__ = ("schema",)
+    SCHEMA_FIELD_NUMBER: _ClassVar[int]
+    schema: str
+    def __init__(self, schema: _Optional[str] = ...) -> None: ...
