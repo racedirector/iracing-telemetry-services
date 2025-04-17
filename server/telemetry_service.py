@@ -27,31 +27,59 @@ def DateEncoder(obj):
 class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   """Servicer that manages telemetry data."""
 
-  telemetry_type_cache = {}
-  json_schema = {}
+  session_json_schema = {}
+  telemetry_json_schema = {}
 
   def __init__(self, ir: IRSDK):
     super().__init__(ir)
 
+  # Override check_connection to check if a new connection was made.
+  # If so, fetch a JSON Schema representation of all known properties
+  # in the telemetry
   def check_connection(self):
     was_connected = self.connected
     is_connected = super().check_connection()
 
     if is_connected and not was_connected:
       properties = {}
+
+      # Freeze the buffer for reading...
       self.ir.freeze_var_buffer_latest()
 
+      # Get the Session string binary.
+      session_binary = self.ir._shared_mem[self.ir._header.session_info_offset:self.ir._header.session_info_len].rstrip(b'\x00').decode(YAML_CODE_PAGE)
+
+      # Get all known keys from the iRacing header.
       for key in self.ir._var_headers_dict:
           var_header = self.ir._var_headers_dict[key]
           var_type = VAR_TYPE_MAP[var_header.type]
           var_count = var_header.count
 
+          # Get a JSON Schema representation of the key based on the type and count.
           properties[key] = json_schema_for_var(key, var_type, var_count)
 
+      # Unfreeze the buffer to continue parsing
       self.ir.unfreeze_var_buffer_latest()
 
-      builder = SchemaBuilder()
-      builder.add_schema({
+      # Convert the binary session info to a JSON dictionary
+      session_yml = yaml.load(session_binary, Loader=YamlSafeLoader)
+      session_json_string = json.dumps(session_yml, indent=2, default=DateEncoder)
+      session_json = json.loads(session_json_string)
+      
+      session_schema = SchemaBuilder()
+      session_schema.add_schema({
+        "$schema": "http://json-schema.org/schema#",
+        "title": "Session",
+        "description": "The session string from the iRacing Simulation.",
+        "type": "object",
+      })
+
+      session_schema.add_object(session_json)
+
+      self.session_json_schema = session_schema.to_schema()
+
+      telemetry_schema = SchemaBuilder()
+      telemetry_schema.add_schema({
         "$schema": "http://json-schema.org/schema#",
         "title": "Telemetry",
         "description": "Telemetry from the iRacing Simulation.",
@@ -60,10 +88,11 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
         "$defs": json_schema_for_irsdk_enums()
       })
 
-      self.json_schema = builder.to_schema()
+      self.telemetry_json_schema = telemetry_schema.to_schema()
     elif not is_connected and was_connected:
       # iRacing disconnected, clear the schema
-      self.json_schema = None
+      self.telemetry_json_schema = None
+      self.session_json_schema = None
 
 
     return is_connected
@@ -71,16 +100,21 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   def GetTelemetryJSONSchema(self, request, context):
     response = telemetry_pb2.GetTelemetryJSONSchemaResponse()
     if self.check_is_connected(context):
-      schema = Struct()
-      schema.update(self.json_schema)
-      response.schema = schema
+      telemetry_schema = Struct()
+      telemetry_schema.update(self.telemetry_json_schema)
+      response.telemetry = telemetry_schema
+
+      session_schema = Struct()
+      session_schema.update(self.session_json_schema)
+      response.session = session_schema
 
     return response
     
   def GetTelemetryJSONSchemaString(self, request, context):
     response = telemetry_pb2.GetTelemetryJSONSchemaStringResponse()
     if self.check_is_connected(context):
-      response.schema = json.dumps(self.json_schema)
+      response.telemetry = json.dumps(self.telemetry_json_schema)
+      response.session = json.dumps(self.session_json_schema)
 
     return response
 
@@ -88,27 +122,24 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
     response = telemetry_pb2.GetTelemetryTypesResponse()
     # Check if the connection is valid
     if self.check_is_connected(context):
+      telemetry_type_cache = {}
       self.ir.freeze_var_buffer_latest()
 
       # For each variable header in the buffer, get the type and count
       # and store it in the cache
-      if self.telemetry_type_cache.__len__() != self.ir._var_headers_dict.__len__():
-        for key in self.ir._var_headers_dict:
-          if key in self.telemetry_type_cache:
-            continue
-
-          var_header = self.ir._var_headers_dict[key]
-          var_type = VAR_TYPE_MAP[var_header.type]
-          var_count = var_header.count
-          type_string = string_for_var(key, var_type)
-          self.telemetry_type_cache[key] = f'Array<{type_string}>[{var_count}]' if var_count > 1 else type_string
+      for key in self.ir._var_headers_dict:
+        var_header = self.ir._var_headers_dict[key]
+        var_type = VAR_TYPE_MAP[var_header.type]
+        var_count = var_header.count
+        type_string = string_for_var(key, var_type)
+        telemetry_type_cache[key] = f'Array<{type_string}>[{var_count}]' if var_count > 1 else type_string
 
       # Unfreeze the buffer
       self.ir.unfreeze_var_buffer_latest()
 
       response_data = Struct()
       response_data.update({
-        'types': self.telemetry_type_cache,
+        'types': telemetry_type_cache,
         'version': self.ir._header.version if self.connected else 0,
         '$refs': ENUM_TYPE_CACHE
       })

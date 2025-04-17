@@ -43,13 +43,17 @@ class GetTelemetryJSONSchemaRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class GetTelemetryJSONSchemaResponse(_message.Message):
-    __slots__ = ("schema",)
-    SCHEMA_FIELD_NUMBER: _ClassVar[int]
-    schema: _struct_pb2.Struct
-    def __init__(self, schema: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
+    __slots__ = ("telemetry", "session")
+    TELEMETRY_FIELD_NUMBER: _ClassVar[int]
+    SESSION_FIELD_NUMBER: _ClassVar[int]
+    telemetry: _struct_pb2.Struct
+    session: _struct_pb2.Struct
+    def __init__(self, telemetry: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ..., session: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
 
 class GetTelemetryJSONSchemaStringResponse(_message.Message):
-    __slots__ = ("schema",)
-    SCHEMA_FIELD_NUMBER: _ClassVar[int]
-    schema: str
-    def __init__(self, schema: _Optional[str] = ...) -> None: ...
+    __slots__ = ("telemetry", "session")
+    TELEMETRY_FIELD_NUMBER: _ClassVar[int]
+    SESSION_FIELD_NUMBER: _ClassVar[int]
+    telemetry: str
+    session: str
+    def __init__(self, telemetry: _Optional[str] = ..., session: _Optional[str] = ...) -> None: ...
