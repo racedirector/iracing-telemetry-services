@@ -13,7 +13,6 @@ except ImportError:
     from yaml import SafeLoader as YamlSafeLoader
 
 
-
 class SchemaService(IRacingService):
   session_json_schema = {}
   telemetry_json_schema = {}
@@ -23,7 +22,7 @@ class SchemaService(IRacingService):
     if ir.is_initialized and ir.is_connected:
       self.__update_schema()
 
-  def __update_schema(self):
+  def __update_schema(self, output=None):
     properties = {}
 
     # Freeze the buffer for reading...
@@ -55,6 +54,7 @@ class SchemaService(IRacingService):
       "title": "Session",
       "description": "The session string from the iRacing Simulation.",
       "type": "object",
+      "additionalProperties": False,
     })
 
     session_schema.add_object(session_json)
@@ -68,10 +68,22 @@ class SchemaService(IRacingService):
       "description": "Telemetry from the iRacing Simulation.",
       "type": "object",
       "properties": properties,
-      "$defs": json_schema_for_irsdk_enums()
+      "$defs": json_schema_for_irsdk_enums(),
+      "additionalProperties": False,  
     })
 
     self.telemetry_json_schema = telemetry_schema.to_schema()
+
+    # Dump the schema to output if specified.
+    if output:
+      # Write session schema to file:
+      with open(f'{output}/session_schema.json', 'w') as session_file:
+        json.dump(self.session_json_schema, session_file, indent=2)
+
+      # Write telemetry schema to file:
+      with open(f'{output}/telemetry_schema.json', 'w') as telemetry_file:
+        json.dump(self.telemetry_json_schema, telemetry_file, indent=2)
+
 
   # Override check_connection to check if a new connection was made.
   # If so, fetch a JSON Schema representation of all known properties
