@@ -101,19 +101,21 @@ def json_for_type(type):
   }
 
 # Returns a JSON schema format for a type with a fixed length.
-def array_for_var(type, count):
+def array_for_var(type, count, description=None):
   return {
     "type": "array",
     "items": json_for_type(type),
     "minItems": count,
     "maxItems": count,
-  }
+  } | ({ "description": description } if description else {})
 
 # Returns a JSON schema format for a reference with an optional description.
-def array_for_ref(ref, description=None):
+def array_for_ref(ref, count, description=None):
   return {
     "type": "array",
-    "items": { "$ref": f"#/$defs/{ref}" }
+    "items": { "$ref": f"#/$defs/{ref}" },
+    "minItems": count,
+    "maxItems": count,
   } | ({ "description": description } if description else {})
 
 # Get's the JSON schema for a variable given the type and count.
@@ -125,7 +127,7 @@ def json_schema_for_var(key, type, count):
   if type == 'i':
     if key in ENUM_TELEMETRY_MAP:
       enum_type = ENUM_TELEMETRY_MAP[key]
-      return array_for_ref(enum_type) if count > 1 else {
+      return array_for_ref(enum_type, count) if count > 1 else {
         "$ref": f"#/$defs/{enum_type}"
       }
     else:
@@ -135,18 +137,25 @@ def json_schema_for_var(key, type, count):
   if type == 'I':
     if key in BITWISE_TELEMETRY_MAP:
       bitwise_type = BITWISE_TELEMETRY_MAP[key]
-      return array_for_ref(bitwise_type, f"Bitwise field for `{bitwise_type}`")
+      description = f"Bitwise field for `{bitwise_type}`"
+      return array_for_ref(bitwise_type, count, description) if count > 1 else {
+        "type": 'integer',
+        "description": description,
+      }
 
 # Get's a JSON schema representation for an enum, optionally formatting as a 
 # hex string.
 def json_schema_for_irsdk_enum(enum_class, as_hex):
+  attributes = get_class_attributes(enum_class, as_hex=as_hex)
+
+  # Create an array of names and an array of values, sorted by values
+  sorted_attributes = sorted(attributes, key=lambda attr: attr['value'])
+  names, values = zip(*[(attr['name'], attr['value']) for attr in sorted_attributes])
+
   return {
     "type": "integer",
-    "enum": sorted([
-      hex(getattr(enum_class, attr)) if as_hex else getattr(enum_class, attr) 
-      for attr in dir(enum_class) 
-      if not attr.startswith('__') and not callable(getattr(enum_class, attr))
-    ])
+    "tsEnumNames": names,
+    "enum": values
   }
 
 # Returns a dict of IRSDK enum type names as the keys and the JSON schema of 
