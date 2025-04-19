@@ -41,12 +41,12 @@ class SchemaStub(object):
                 _registered_method=True)
         self.GetTelemetryJSONSchema = channel.unary_unary(
                 '/iracing.telemetry.Schema/GetTelemetryJSONSchema',
-                request_serializer=server_dot_proto_dot_schema__pb2.GetTelemetryTypesRequest.SerializeToString,
+                request_serializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaResponse.FromString,
                 _registered_method=True)
         self.GetTelemetryJSONSchemaString = channel.unary_unary(
                 '/iracing.telemetry.Schema/GetTelemetryJSONSchemaString',
-                request_serializer=server_dot_proto_dot_schema__pb2.GetTelemetryTypesRequest.SerializeToString,
+                request_serializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaStringResponse.FromString,
                 _registered_method=True)
 
@@ -87,12 +87,12 @@ def add_SchemaServicer_to_server(servicer, server):
             ),
             'GetTelemetryJSONSchema': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTelemetryJSONSchema,
-                    request_deserializer=server_dot_proto_dot_schema__pb2.GetTelemetryTypesRequest.FromString,
+                    request_deserializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaRequest.FromString,
                     response_serializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaResponse.SerializeToString,
             ),
             'GetTelemetryJSONSchemaString': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTelemetryJSONSchemaString,
-                    request_deserializer=server_dot_proto_dot_schema__pb2.GetTelemetryTypesRequest.FromString,
+                    request_deserializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaRequest.FromString,
                     response_serializer=server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaStringResponse.SerializeToString,
             ),
     }
@@ -148,7 +148,7 @@ class Schema(object):
             request,
             target,
             '/iracing.telemetry.Schema/GetTelemetryJSONSchema',
-            server_dot_proto_dot_schema__pb2.GetTelemetryTypesRequest.SerializeToString,
+            server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaRequest.SerializeToString,
             server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaResponse.FromString,
             options,
             channel_credentials,
@@ -175,7 +175,7 @@ class Schema(object):
             request,
             target,
             '/iracing.telemetry.Schema/GetTelemetryJSONSchemaString',
-            server_dot_proto_dot_schema__pb2.GetTelemetryTypesRequest.SerializeToString,
+            server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaRequest.SerializeToString,
             server_dot_proto_dot_schema__pb2.GetTelemetryJSONSchemaStringResponse.FromString,
             options,
             channel_credentials,

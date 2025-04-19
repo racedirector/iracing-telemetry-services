@@ -42,10 +42,20 @@ class TelemetryStub(object):
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
                 _registered_method=True)
+        self.DumpTelemetryString = channel.unary_unary(
+                '/iracing.telemetry.Telemetry/DumpTelemetryString',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.FromString,
+                _registered_method=True)
         self.GetTelemetry = channel.unary_unary(
                 '/iracing.telemetry.Telemetry/GetTelemetry',
                 request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
+                _registered_method=True)
+        self.GetTelemetryString = channel.unary_unary(
+                '/iracing.telemetry.Telemetry/GetTelemetryString',
+                request_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.FromString,
                 _registered_method=True)
         self.RequestTelemetryStream = channel.stream_stream(
                 '/iracing.telemetry.Telemetry/RequestTelemetryStream',
@@ -56,6 +66,11 @@ class TelemetryStub(object):
                 '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
                 request_serializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
                 response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
+                _registered_method=True)
+        self.SubscribeTelemetryStringStream = channel.unary_stream(
+                '/iracing.telemetry.Telemetry/SubscribeTelemetryStringStream',
+                request_serializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
+                response_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.FromString,
                 _registered_method=True)
 
 
@@ -75,6 +90,12 @@ class TelemetryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DumpTelemetryString(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetTelemetry(self, request, context):
         """
         A server-to-client RPC
@@ -82,6 +103,12 @@ class TelemetryServicer(object):
         The client sends a GetTelemetryRequest message to the server and gets a
         single GetTelemetryResponse message back.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetTelemetryString(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -110,6 +137,12 @@ class TelemetryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SubscribeTelemetryStringStream(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_TelemetryServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -118,10 +151,20 @@ def add_TelemetryServicer_to_server(servicer, server):
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
             ),
+            'DumpTelemetryString': grpc.unary_unary_rpc_method_handler(
+                    servicer.DumpTelemetryString,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.SerializeToString,
+            ),
             'GetTelemetry': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTelemetry,
                     request_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.FromString,
                     response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
+            ),
+            'GetTelemetryString': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTelemetryString,
+                    request_deserializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.SerializeToString,
             ),
             'RequestTelemetryStream': grpc.stream_stream_rpc_method_handler(
                     servicer.RequestTelemetryStream,
@@ -132,6 +175,11 @@ def add_TelemetryServicer_to_server(servicer, server):
                     servicer.SubscribeTelemetryStream,
                     request_deserializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.FromString,
                     response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.SerializeToString,
+            ),
+            'SubscribeTelemetryStringStream': grpc.unary_stream_rpc_method_handler(
+                    servicer.SubscribeTelemetryStringStream,
+                    request_deserializer=server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.FromString,
+                    response_serializer=server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -174,6 +222,33 @@ class Telemetry(object):
             _registered_method=True)
 
     @staticmethod
+    def DumpTelemetryString(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/iracing.telemetry.Telemetry/DumpTelemetryString',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def GetTelemetry(request,
             target,
             options=(),
@@ -190,6 +265,33 @@ class Telemetry(object):
             '/iracing.telemetry.Telemetry/GetTelemetry',
             server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
             server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetTelemetryString(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/iracing.telemetry.Telemetry/GetTelemetryString',
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryRequest.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -244,6 +346,33 @@ class Telemetry(object):
             '/iracing.telemetry.Telemetry/SubscribeTelemetryStream',
             server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
             server_dot_proto_dot_telemetry__pb2.GetTelemetryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SubscribeTelemetryStringStream(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/iracing.telemetry.Telemetry/SubscribeTelemetryStringStream',
+            server_dot_proto_dot_telemetry__pb2.TelemetrySubscriptionRequest.SerializeToString,
+            server_dot_proto_dot_telemetry__pb2.GetTelemetryStringResponse.FromString,
             options,
             channel_credentials,
             insecure,

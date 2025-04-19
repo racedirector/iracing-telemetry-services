@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19server/proto/schema.proto\x12\x11iracing.telemetry\x1a\x1cgoogle/protobuf/struct.proto\"\x1a\n\x18GetTelemetryTypesRequest\"C\n\x19GetTelemetryTypesResponse\x12&\n\x05types\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\"\x1f\n\x1dGetTelemetryJSONSchemaRequest\"v\n\x1eGetTelemetryJSONSchemaResponse\x12*\n\ttelemetry\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\x12(\n\x07session\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"J\n$GetTelemetryJSONSchemaStringResponse\x12\x11\n\ttelemetry\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\t2\xff\x02\n\x06Schema\x12p\n\x11GetTelemetryTypes\x12+.iracing.telemetry.GetTelemetryTypesRequest\x1a,.iracing.telemetry.GetTelemetryTypesResponse\"\x00\x12z\n\x16GetTelemetryJSONSchema\x12+.iracing.telemetry.GetTelemetryTypesRequest\x1a\x31.iracing.telemetry.GetTelemetryJSONSchemaResponse\"\x00\x12\x86\x01\n\x1cGetTelemetryJSONSchemaString\x12+.iracing.telemetry.GetTelemetryTypesRequest\x1a\x37.iracing.telemetry.GetTelemetryJSONSchemaStringResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19server/proto/schema.proto\x12\x11iracing.telemetry\x1a\x1cgoogle/protobuf/struct.proto\"\x1a\n\x18GetTelemetryTypesRequest\"C\n\x19GetTelemetryTypesResponse\x12&\n\x05types\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\"\x1f\n\x1dGetTelemetryJSONSchemaRequest\"v\n\x1eGetTelemetryJSONSchemaResponse\x12*\n\ttelemetry\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\x12(\n\x07session\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"J\n$GetTelemetryJSONSchemaStringResponse\x12\x11\n\ttelemetry\x18\x01 \x01(\t\x12\x0f\n\x07session\x18\x02 \x01(\t2\x89\x03\n\x06Schema\x12p\n\x11GetTelemetryTypes\x12+.iracing.telemetry.GetTelemetryTypesRequest\x1a,.iracing.telemetry.GetTelemetryTypesResponse\"\x00\x12\x7f\n\x16GetTelemetryJSONSchema\x12\x30.iracing.telemetry.GetTelemetryJSONSchemaRequest\x1a\x31.iracing.telemetry.GetTelemetryJSONSchemaResponse\"\x00\x12\x8b\x01\n\x1cGetTelemetryJSONSchemaString\x12\x30.iracing.telemetry.GetTelemetryJSONSchemaRequest\x1a\x37.iracing.telemetry.GetTelemetryJSONSchemaStringResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -43,5 +43,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_GETTELEMETRYJSONSCHEMASTRINGRESPONSE']._serialized_start=328
   _globals['_GETTELEMETRYJSONSCHEMASTRINGRESPONSE']._serialized_end=402
   _globals['_SCHEMA']._serialized_start=405
-  _globals['_SCHEMA']._serialized_end=788
+  _globals['_SCHEMA']._serialized_end=798
 # @@protoc_insertion_point(module_scope)

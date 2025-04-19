@@ -27,3 +27,9 @@ class GetTelemetryResponse(_message.Message):
     TELEMETRY_FIELD_NUMBER: _ClassVar[int]
     telemetry: _struct_pb2.Struct
     def __init__(self, telemetry: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ...) -> None: ...
+
+class GetTelemetryStringResponse(_message.Message):
+    __slots__ = ("telemetry",)
+    TELEMETRY_FIELD_NUMBER: _ClassVar[int]
+    telemetry: str
+    def __init__(self, telemetry: _Optional[str] = ...) -> None: ...
