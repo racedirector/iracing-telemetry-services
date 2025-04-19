@@ -16,6 +16,19 @@ try:
 except ImportError:
     from yaml import SafeLoader as YamlSafeLoader
 
+def get_telemetry_from_iracing(ir: IRSDK, keys: list[str], condition = lambda key: True) -> dict:
+  telemetry = {}
+  ir.freeze_var_buffer_latest()
+  telemetry = { 
+    key: ir[key]
+    for key in keys
+    if condition(key)
+  }
+  ir.unfreeze_var_buffer_latest()
+
+  return telemetry
+
+
 class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   """Servicer that manages telemetry data."""
 
@@ -62,16 +75,19 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
   def GetTelemetry(self, request: telemetry_pb2.GetTelemetryRequest, context: grpc.ServicerContext) -> telemetry_pb2.GetTelemetryResponse:
     response = telemetry_pb2.GetTelemetryResponse()
     if self.check_is_connected(context):
-      self.ir.freeze_var_buffer_latest()
-      telemetry = { 
-        key: self.ir[key]
-        for key in request.keys
-      }
-      self.ir.unfreeze_var_buffer_latest()
+      telemetry = get_telemetry_from_iracing(self.ir, request.keys)
 
       struct = Struct()
       struct.update(telemetry)
       response.telemetry = struct
+
+    return response
+  
+  def GetTelemetryString(self, request: telemetry_pb2.GetTelemetryRequest, context):
+    response = telemetry_pb2.GetTelemetryStringResponse()
+    if self.check_is_connected(context):
+      telemetry = get_telemetry_from_iracing(self.ir, request.keys)
+      response.telemetry = json.dumps(telemetry, default=DateEncoder)
 
     return response
   
@@ -110,13 +126,11 @@ class TelemetryService(IRacingService, telemetry_pb2_grpc.TelemetryServicer):
 
     telemetry_cache = {}
     while stream_ir.is_connected and stream_ir.is_initialized:
-      stream_ir.freeze_var_buffer_latest()
-      telemetry = { 
-        key: stream_ir[key]
-        for key in request.keys 
-        if key not in telemetry_cache or telemetry_cache[key] != stream_ir[key] 
-      }
-      stream_ir.unfreeze_var_buffer_latest()
+      telemetry = get_telemetry_from_iracing(
+        stream_ir,
+        request.keys, 
+        lambda key: key not in telemetry_cache or telemetry_cache[key] != stream_ir[key]
+      )
 
       if telemetry: 
         struct = Struct()
