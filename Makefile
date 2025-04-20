@@ -19,6 +19,15 @@ run:
 run-test:
 	python -m server --test __assets__/telemetry.bin
 
+# Start the server and the envoy proxy
+run-web:
+	python -m server &
+	docker-compose -f compose.yml up -d envoy
+
+run-web-test:
+	python -m server --test __assets__/telemetry.bin &
+	docker-compose -f compose.yml up -d envoy
+
 # Create a spec for compiling the .exe
 spec:
 	pyi-makespec --onefile server/__main__.py --name=telemetry-server

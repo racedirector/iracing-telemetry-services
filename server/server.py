@@ -15,11 +15,11 @@ from server.proto import schema_pb2
 class Server:
   iracing: IRSDK
 
-  def __init__(self, port = 50051, server = grpc.server(futures.ThreadPoolExecutor(max_workers=10)), iracing = IRSDK()):
+  def __init__(self, port = 50051, server = grpc.server(futures.ThreadPoolExecutor(max_workers=10)), iracing = IRSDK(), test_file=None):
     self.iracing = iracing
     
     broadcast_pb2_grpc.add_BroadcastServicer_to_server(BroadcastService(iracing), server)
-    telemetry_pb2_grpc.add_TelemetryServicer_to_server(TelemetryService(iracing), server)
+    telemetry_pb2_grpc.add_TelemetryServicer_to_server(TelemetryService(iracing, test_file), server)
     schema_pb2_grpc.add_SchemaServicer_to_server(SchemaService(iracing), server)
 
 

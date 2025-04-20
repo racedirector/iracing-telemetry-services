@@ -18,6 +18,7 @@ def main(
   server = Server(
     port=int(port),
     iracing=iracing,
+    test_file=test_file
   )
 
   try:
