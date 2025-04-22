@@ -47,6 +47,15 @@ exe-http:
 exe-grpc:
 	pyinstaller telemetry-server-grpc.spec
 
+# ─────────────── Build a Windows executable for the WebSocket server ───────────────
+# Requires: telemetry-ws.spec in the project root
+#
+# Usage:
+#   make exe-ws     → dist/telemetry-ws.exe
+# ────────────────────────────────────────────────────────────────────────────────────
+exe-ws:
+	pyinstaller telemetry-ws.spec --noconfirm --clean --distpath dist
+
 # Load test subscription streams
 load-test-subscription:
 	ghz --insecure --proto ./proto/telemetry.proto \
