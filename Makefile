@@ -47,6 +47,14 @@ exe-http:
 exe-grpc:
 	pyinstaller telemetry-server-grpc.spec
 
+# Create a spec for compiling the .exe
+spec:
+	pyi-makespec --onefile server/__main__.py --name=telemetry-server
+
+# Create a spec for compiling the WebSocket‑server .exe
+spec-ws:
+	pyi-makespec --onefile server_ws/__main__.py --name=telemetry-ws
+
 # ─────────────── Build a Windows executable for the WebSocket server ───────────────
 # Requires: telemetry-ws.spec in the project root
 #
