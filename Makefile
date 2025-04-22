@@ -75,3 +75,16 @@ load-test-telemetry:
 		-c 100 \
 		-n 10000 \
 		0.0.0.0:50051
+
+# ───────────────────────── WebSocket service ─────────────────────────
+# Start the JSON‑over‑WebSocket API on port 8000                       #
+#                                                                      #
+#   make run-ws          – live data from iRacing                      #
+#   make run-ws-test     – replay static __assets__/telemetry.bin      #
+# ──────────────────────────────────────────────────────────────────────
+
+run-ws:
+	python -m server_ws
+
+run-ws-test:
+	python -m server_ws --test __assets__/telemetry.bin
