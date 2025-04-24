@@ -12,11 +12,11 @@ protoc:
 		proto/*.proto
 
 # Start the server
-run:
+run-grpc:
 	python -m server
 
 # Start the server with a static telemetry file
-run-test:
+run-grpc-test:
 	python -m server --test __assets__/telemetry.bin
 
 run-http:
@@ -26,11 +26,11 @@ run-http-test:
 	python -m server_http --test __assets__/telemetry.bin
 
 # Start the server and the envoy proxy
-run-web:
+run-grpc-web:
 	python -m server &
 	docker-compose -f compose.yml up -d envoy
 
-run-web-test:
+run-grpc-web-test:
 	python -m server --test __assets__/telemetry.bin &
 	docker-compose -f compose.yml up -d envoy
 
@@ -42,10 +42,10 @@ spec-http:
 	pyi-makespec --onefile server_http/__main__.py --name=telemetry-server-http
 
 exe-http:
-	pyinstaller telemetry-server-http.spec
+	pyinstaller telemetry-server-http.spec --clean --noconfirm --distpath dist
 
 exe-grpc:
-	pyinstaller telemetry-server-grpc.spec
+	pyinstaller telemetry-server-grpc.spec --clean --noconfirm --distpath dist
 
 # Load test subscription streams
 load-test-subscription:

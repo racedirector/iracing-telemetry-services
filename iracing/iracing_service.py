@@ -113,8 +113,6 @@ class IRacingService:
     }
     self.client.unfreeze_var_buffer_latest()
 
-    self.cache.update(telemetry)
-
     return telemetry
 
   def __update_schema(self):
