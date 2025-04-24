@@ -11,6 +11,7 @@
     <div style="max-width: 1200px; margin: 0 auto; padding: 20px; height: 90vh; overflow: auto;">
       <div style="flex-direction: row;">
         <h3>iRacing Telemetry</h3>
+        <button onclick="window.location.href='/docs'">API Docs</button>
         <div id="statusIndicator" style="margin-bottom: 10px; color: red;">Status: Disconnected</div>
       </div>
 
@@ -25,8 +26,9 @@
 
       <button onclick="submitKeys()">Submit</button>
       <button onclick="stopStream()">Stop</button>
+      <br>
       
-      <div style="display: flex; gap: 20px; margin-top: 20px; height: calc(100% - 200px);">
+      <div style="display: flex; gap: 20px; margin-top: 20px; height: calc(100% - 20px);">
         <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
           <h4>WebSocket Output</h4>
           <div id="responseOutput" style="flex: 1; overflow: auto; font-family: monospace; white-space: pre;"></div>

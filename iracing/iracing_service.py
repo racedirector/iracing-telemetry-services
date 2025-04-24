@@ -1,5 +1,6 @@
 import json
 import yaml
+import struct
 from genson import SchemaBuilder
 from irsdk import IRSDK, VAR_TYPE_MAP, YAML_CODE_PAGE
 from iracing.date_encoder import DateEncoder
@@ -128,6 +129,36 @@ class IRacingService:
 
     return telemetry
 
+  def get_session_string(self):
+    if not self.check_connection():
+      return None
+
+    session_binary = self.client._shared_mem[self.client._header.session_info_offset:self.client._header.session_info_len].rstrip(b'\x00').decode(YAML_CODE_PAGE)
+
+    return session_binary
+  
+  def dump_telemetry(self):
+    if not self.check_connection():
+      return None
+
+    telemetry = {}
+    self.client.freeze_var_buffer_latest()
+
+    # Get all the headers from the buffer
+    for key in self.client._var_headers_dict:
+      var_header = self.client._var_headers_dict[key]
+      var_buf_latest = self.client._var_buffer_latest
+      res = struct.unpack_from(
+        VAR_TYPE_MAP[var_header.type] * var_header.count,
+        var_buf_latest.get_memory(),
+        var_buf_latest.buf_offset + var_header.offset)
+      
+      telemetry[key] = res[0] if var_header.count == 1 else list(res)
+
+    self.client.unfreeze_var_buffer_latest()
+
+    return telemetry
+
   def __update_schema(self):
     json_schema = {}
     self.client.freeze_var_buffer_latest()
@@ -157,7 +188,7 @@ class IRacingService:
 
         # Convert the binary session info to a JSON dictionary
     session_yml = yaml.load(session_binary, Loader=YamlSafeLoader)
-    session_json_string = json.dumps(session_yml, indent=2, default=DateEncoder)
+    session_json_string = json.dumps(session_yml, default=DateEncoder)
     session_json = json.loads(session_json_string)
     
     session_schema = SchemaBuilder()

@@ -1,5 +1,7 @@
 from asyncio import sleep
 import os
+
+from iracing.date_encoder import DateEncoder
 from . import make_mock_open, CaptureOnCloseBuffer
 from typing import List
 from fastapi import FastAPI, HTTPException, Query, Response
@@ -9,6 +11,8 @@ from fastapi.websockets import WebSocket
 from iracing.iracing_service import IRacingService
 from unittest.mock import patch
 from pathlib import Path
+import yaml
+import json as jsonlib
 
 test_file = os.getenv("PYIRSDK_TEST_FILE", None)
 
@@ -41,23 +45,24 @@ def telemetry(keys: List[str] = Query(..., description="List of telemetry keys t
         raise HTTPException(status_code=500, detail="Failed to retrieve telemetry data")
     return telemetry_data
 
-dump_path = Path(__file__).parent / "dump_response.yml"
-
 @app.get("/dump", response_class=Response, responses={ 
     200: { 
-        "content": { "application/x-yaml": { "example": dump_path.read_text() }},
         "description": "Dump of telemetry data in YML format"
     }
 })
-def dump():
+def dump(json: bool = Query(False, description="Return the dump as JSON")):
     if not client.check_connection():
         raise HTTPException(status_code=503, detail="iRacing client is not connected")
     
-    request_buffer = CaptureOnCloseBuffer()
-    with patch("builtins.open", make_mock_open(request_buffer)):
-        client.client.parse_to('dump_path')
+    session_string = client.get_session_string()
+    session_json = yaml.safe_load(session_string)
+    telemetry_dump = client.dump_telemetry()
+    telemetry_dump.update(session_json)
 
-    return request_buffer.getvalue()
+    if json:
+        return Response(content=jsonlib.dumps(telemetry_dump, default=DateEncoder), media_type="application/json")
+    else:
+        return Response(content=yaml.dump(telemetry_dump), media_type="application/x-yaml")
     
 
 @app.websocket("/ws/telemetry")
