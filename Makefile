@@ -12,11 +12,11 @@ protoc:
 		proto/*.proto
 
 # Start the server
-run:
+run-grpc:
 	python -m server
 
 # Start the server with a static telemetry file
-run-test:
+run-grpc-test:
 	python -m server --test __assets__/telemetry.bin
 
 run-http:
@@ -24,6 +24,12 @@ run-http:
 
 run-http-test:
 	python -m server_http --test __assets__/telemetry.bin
+
+run-ws:
+	python -m server_ws
+
+run-ws-test:
+	python -m server_ws --test __assets__/telemetry.bin
 
 # Start the server and the envoy proxy
 run-web:
@@ -41,24 +47,18 @@ spec-grpc:
 spec-http:
 	pyi-makespec --onefile server_http/__main__.py --name=telemetry-server-http
 
-exe-http:
-	pyinstaller telemetry-server-http.spec
-
-exe-grpc:
-	pyinstaller telemetry-server-grpc.spec
-
 # Create a spec for compiling the WebSocket‑server .exe
 spec-ws:
-	pyi-makespec --onefile server_ws/__main__.py --name=telemetry-ws
+	pyi-makespec --onefile server_ws/__main__.py --name=telemetry-service-ws
 
-# ─────────────── Build a Windows executable for the WebSocket server ───────────────
-# Requires: telemetry-ws.spec in the project root
-#
-# Usage:
-#   make exe-ws     → dist/telemetry-ws.exe
-# ────────────────────────────────────────────────────────────────────────────────────
+exe-http:
+	pyinstaller telemetry-server-http.spec --clean --noconfirm --distpath dist
+
+exe-grpc:
+	pyinstaller telemetry-server-grpc.spec --clean --noconfirm --distpath dist
+
 exe-ws:
-	pyinstaller telemetry-ws.spec --noconfirm --clean --distpath dist
+	pyinstaller telemetry-service-ws.spec --clean --noconfirm --distpath dist
 
 # Load test subscription streams
 load-test-subscription:
@@ -88,16 +88,3 @@ load-test-telemetry:
 		-c 100 \
 		-n 10000 \
 		0.0.0.0:50051
-
-# ───────────────────────── WebSocket service ─────────────────────────
-# Start the JSON‑over‑WebSocket API on port 8000                       #
-#                                                                      #
-#   make run-ws          – live data from iRacing                      #
-#   make run-ws-test     – replay static __assets__/telemetry.bin      #
-# ──────────────────────────────────────────────────────────────────────
-
-run-ws:
-	python -m server_ws
-
-run-ws-test:
-	python -m server_ws --test __assets__/telemetry.bin
