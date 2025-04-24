@@ -12,6 +12,9 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        svc: [grpc, http]
 
     steps:
       - name: Checkout Repository
@@ -25,16 +28,15 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
+          pip install -r requirements.txt pyinstaller
 
-      - name: Build Executable
+      - name: Build ${{ matrix.svc }} Executable
         run: |
-          make spec
-          pyinstaller telemetry-server.spec
+          make spec-${{ matrix.svc }}
+          make exe-${{ matrix.svc }}
 
       - name: Upload Executable
         uses: actions/upload-artifact@v4
         with:
-          name: iracing-telemetry-server
-          path: dist/telemetry-server.exe
+          name: iracing-telemetry-server-${{ matrix.svc }}
+          path: dist/telemetry-server-${{ matrix.svc }}.exe

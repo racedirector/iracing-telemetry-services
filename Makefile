@@ -19,6 +19,12 @@ run:
 run-test:
 	python -m server --test __assets__/telemetry.bin
 
+run-http:
+	python -m server_http
+
+run-http-test:
+	python -m server_http --test __assets__/telemetry.bin
+
 # Start the server and the envoy proxy
 run-web:
 	python -m server &
@@ -29,8 +35,17 @@ run-web-test:
 	docker-compose -f compose.yml up -d envoy
 
 # Create a spec for compiling the .exe
-spec:
-	pyi-makespec --onefile server/__main__.py --name=telemetry-server
+spec-grpc:
+	pyi-makespec --onefile server/__main__.py --name=telemetry-server-grpc
+
+spec-http:
+	pyi-makespec --onefile server_http/__main__.py --name=telemetry-server-http
+
+exe-http:
+	pyinstaller telemetry-server-http.spec
+
+exe-grpc:
+	pyinstaller telemetry-server-grpc.spec
 
 # Load test subscription streams
 load-test-subscription:
