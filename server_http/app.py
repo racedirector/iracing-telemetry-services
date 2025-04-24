@@ -40,21 +40,18 @@ async def telemetry_websocket(websocket: WebSocket):
     if fps < 1 or fps > 60:
         raise HTTPException(status_code=400, detail="FPS must be between 1 and 60")
 
-    iracing_service = IRacingService(
-        test_file=test_file,
-    )
+    with IRacingService(test_file=test_file) as iracing_service:
+        while iracing_service.check_connection():
+            telemetry_data = iracing_service.get_telemetry(keys)
+            if telemetry_data:
+                await websocket.send_json(telemetry_data)
+            else:
+                await websocket.send_json({"error": "Failed to retrieve telemetry data"})
+            
+            # Sleep for the specified FPS
+            await sleep(1 / fps)
 
-    while iracing_service.check_connection():
-        telemetry_data = iracing_service.get_telemetry(keys)
-        if telemetry_data:
-            await websocket.send_json(telemetry_data)
-        else:
-            await websocket.send_json({"error": "Failed to retrieve telemetry data"})
-        
-        # Sleep for the specified FPS
-        await sleep(1 / fps)
-
-    await websocket.close()
+        await websocket.close()
 
 @app.get("/schema/telemetry")
 def telemetry_schema():

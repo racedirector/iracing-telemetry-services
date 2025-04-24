@@ -88,6 +88,19 @@ class IRacingService:
     self.test_file = test_file
     self.dump_path = dump_path
 
+  def __enter__(self):
+    return self
+
+  def __exit__(self, exc_type, exc_val, exc_tb):
+    self.client.shutdown()
+    self.client = None
+    self.connected = False
+    self.telemetry_schema = None
+    self.session_schema = None
+    self.test_file = None
+    self.dump_path = None
+
+
   def check_connection(self):
     if self.connected and not (self.client.is_initialized and self.client.is_connected):
       print("iRacing disconnected")
