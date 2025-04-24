@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>iRacing Telemetry</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+  </head>
+
+  <body>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px; height: 90vh; overflow: auto;">
+      <div style="flex-direction: row;">
+        <h3>iRacing Telemetry</h3>
+        <div id="statusIndicator" style="margin-bottom: 10px; color: red;">Status: Disconnected</div>
+      </div>
+
+      <label for="fpsInput">FPS (1-60):</label>
+      <input type="number" id="fpsInput" value="1" min="1" max="60">
+
+      <br>
+
+      <textarea id="keysInput" rows="4" cols="50" placeholder="Enter comma-separated keys..."></textarea>
+
+      <br>
+
+      <button onclick="submitKeys()">Submit</button>
+      <button onclick="stopStream()">Stop</button>
+      
+      <div style="display: flex; gap: 20px; margin-top: 20px; height: calc(100% - 200px);">
+        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          <h4>WebSocket Output</h4>
+          <div id="responseOutput" style="flex: 1; overflow: auto; font-family: monospace; white-space: pre;"></div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          <h4>Dump Output</h4>
+          <button onclick="fetchDump()">Fetch Dump</button>
+          <div id="dumpOutput" style="flex: 1; overflow: auto; font-family: monospace; white-space: pre;"></div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          <h4>Telemetry Schema</h4>
+          <div id="telemetrySchemaOutput" style="flex: 1; overflow: auto; font-family: monospace; white-space: pre;"></div>
+          <h4>Session Schema</h4>
+          <div id="sessionSchemaOutput" style="flex: 1; overflow: auto; font-family: monospace; white-space: pre;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var ws = null;
+
+      function submitKeys() {
+        const keysInput = document.getElementById('keysInput').value;
+        const keysArray = keysInput.split(',').map(k => k.trim()).filter(k => k.length > 0);
+        const fpsValue = parseInt(document.getElementById('fpsInput').value, 10);
+
+        if (isNaN(fpsValue) || fpsValue <= 0 || fpsValue > 60) {
+          alert("Please enter a valid FPS between 1 and 60.");
+          return;
+        }
+
+        if (ws) {
+          ws.close();
+        }
+
+        ws = new WebSocket(`ws://${location.host}/ws/telemetry`);
+
+        ws.onopen = function(event) {
+          console.debug("WebSocket opened.");
+          document.getElementById('statusIndicator').textContent = "Status: Connected";
+          document.getElementById('statusIndicator').style.color = "green";
+          ws.send(JSON.stringify({
+            fps: fpsValue,
+            keys: keysArray
+          }));
+        };
+
+        ws.onmessage = function(event) {
+          const outputDiv = document.getElementById('responseOutput');
+          const jsonResponse = JSON.parse(event.data);
+          outputDiv.innerHTML = "<pre><code class='json'>" + JSON.stringify(jsonResponse, null, 2) + "</code></pre>";
+          hljs.highlightAll();
+        };
+
+        ws.onclose = function(event) {
+          console.log("WebSocket closed.");
+          document.getElementById('statusIndicator').textContent = "Status: Disconnected";
+          document.getElementById('statusIndicator').style.color = "red";
+        };
+      }
+
+      function stopStream() {
+        if (ws) {
+          ws.close();
+          ws = null;
+          console.log("WebSocket manually closed.");
+          document.getElementById('statusIndicator').textContent = "Status: Disconnected";
+          document.getElementById('statusIndicator').style.color = "red";
+        }
+      }
+
+
+      function fetchDump() {
+        fetch('/dump')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then(data => {
+            const dumpDiv = document.getElementById('dumpOutput');
+            dumpDiv.innerHTML = "<pre><code class='yaml'>" + data + "</code></pre>";
+            hljs.highlightAll();
+          })
+          .catch(error => {
+            console.error("Error fetching dump:", error);
+          });
+      }
+
+      function fetchTelemetrySchema() {
+        fetch('/schema/telemetry')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then(data => {
+            const telemetryDiv = document.getElementById('telemetrySchemaOutput');
+            telemetryDiv.innerHTML = "<pre><code class='json'>" + JSON.stringify(data, null, 2) + "</code></pre>";
+            hljs.highlightAll();
+          })
+          .catch(error => {
+            console.error("Error fetching telemetry schema:", error);
+          });
+      }
+
+      function fetchSessionSchema() {
+        fetch('/schema/session')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then(data => {
+            const sessionDiv = document.getElementById('sessionSchemaOutput');
+            sessionDiv.innerHTML = "<pre><code class='json'>" + JSON.stringify(data, null, 2) + "</code></pre>";
+            hljs.highlightAll();
+          })
+          .catch(error => {
+            console.error("Error fetching session schema:", error);
+          });
+      }
+
+      // Call these functions on page load
+      fetchTelemetrySchema();
+      fetchSessionSchema();
+    </script>
+  </body>
+</html>

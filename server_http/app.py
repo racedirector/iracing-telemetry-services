@@ -3,6 +3,8 @@ import os
 from . import make_mock_open, CaptureOnCloseBuffer
 from typing import List
 from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.websockets import WebSocket
 from iracing.iracing_service import IRacingService
 from unittest.mock import patch
@@ -15,6 +17,13 @@ client = IRacingService(
 )
 
 app = FastAPI(title="iRacing Telemetry API", debug=True)
+
+static_dir = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=static_dir, html=True), name="static")
+
+@app.get("/", response_class=FileResponse)
+async def index():
+    return FileResponse(static_dir / "index.html")
 
 @app.get("/telemetry", responses={
     200: {
@@ -64,8 +73,8 @@ async def telemetry_websocket(websocket: WebSocket):
         raise HTTPException(status_code=400, detail="No keys provided")
     if not fps:
         raise HTTPException(status_code=400, detail="No fps provided")
-    if fps < 1 or fps > 60:
-        raise HTTPException(status_code=400, detail="FPS must be between 1 and 60")
+    if fps <= 0 or fps > 60:
+        raise HTTPException(status_code=400, detail="FPS must be greater than 0 and less than or equal to 60")
 
     with IRacingService(test_file=test_file) as iracing_service:
         while iracing_service.check_connection():
