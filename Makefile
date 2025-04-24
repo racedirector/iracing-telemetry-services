@@ -39,10 +39,10 @@ spec-grpc:
 	pyi-makespec --onefile server/__main__.py --name=telemetry-server-grpc
 
 spec-http:
-	pyi-makespec --onefile server_http/__main__.py --name=telemetry-server-http
+	echo "Removed"
 
 exe-http:
-	pyinstaller telemetry-server-http.spec --clean --noconfirm --distpath dist
+	pyinstaller --clean --name telemetry-server-http --add-data="server_http\static;static" --additional-hooks-dir extra-hooks server_http/app.py -F
 
 exe-grpc:
 	pyinstaller telemetry-server-grpc.spec --clean --noconfirm --distpath dist

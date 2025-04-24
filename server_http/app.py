@@ -1,5 +1,7 @@
+import argparse
 from asyncio import sleep
 import os
+import uvicorn
 import yaml
 import json as jsonlib
 from iracing.date_encoder import DateEncoder
@@ -120,3 +122,26 @@ def session_schema():
         raise HTTPException(status_code=503, detail="iRacing client is not connected")
     
     return client.session_schema
+
+if __name__ == "__main__":  # pragma: no cover
+    # multiprocessing.freeze_support()
+    parser = argparse.ArgumentParser(description="iRacing HTTP server")
+    parser.add_argument("--port", type=int, default=8001)
+    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--reload", action="store_true")
+    parser.add_argument("--test", type=Path,
+                    help="Pass a .bin telemetry file for offline testing")
+    
+    args = parser.parse_args()
+
+    if args.test is not None:
+        import os
+        os.environ["PYIRSDK_TEST_FILE"] = str(args.test)
+
+    uvicorn.run(
+        app,
+        host=args.host,
+        port=args.port,
+        reload=args.reload,
+    )
+    
