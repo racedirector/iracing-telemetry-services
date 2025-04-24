@@ -25,18 +25,12 @@ run-http:
 run-http-test:
 	python -m server_http --test __assets__/telemetry.bin
 
-run-ws:
-	python -m server_ws
-
-run-ws-test:
-	python -m server_ws --test __assets__/telemetry.bin
-
 # Start the server and the envoy proxy
-run-web:
+run-grpc-web:
 	python -m server &
 	docker-compose -f compose.yml up -d envoy
 
-run-web-test:
+run-grpc-web-test:
 	python -m server --test __assets__/telemetry.bin &
 	docker-compose -f compose.yml up -d envoy
 
@@ -47,18 +41,11 @@ spec-grpc:
 spec-http:
 	pyi-makespec --onefile server_http/__main__.py --name=telemetry-server-http
 
-# Create a spec for compiling the WebSocket‑server .exe
-spec-ws:
-	pyi-makespec --onefile server_ws/__main__.py --name=telemetry-service-ws
-
 exe-http:
 	pyinstaller telemetry-server-http.spec --clean --noconfirm --distpath dist
 
 exe-grpc:
 	pyinstaller telemetry-server-grpc.spec --clean --noconfirm --distpath dist
-
-exe-ws:
-	pyinstaller telemetry-service-ws.spec --clean --noconfirm --distpath dist
 
 # Load test subscription streams
 load-test-subscription:
