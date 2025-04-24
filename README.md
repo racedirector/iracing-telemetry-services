@@ -20,6 +20,9 @@ make run
 
 ## Services
 
+iRacing telemetry data is provided via gRPC, REST API, and WebSocket API.
+The server uses `pyirsdk` to connect to the iRacing simulation and retrieve telemetry data.
+
 ### gRPC Services
 
 #### Telemetry Service
