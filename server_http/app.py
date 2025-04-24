@@ -1,18 +1,15 @@
 from asyncio import sleep
 import os
-
+import yaml
+import json as jsonlib
 from iracing.date_encoder import DateEncoder
-from . import make_mock_open, CaptureOnCloseBuffer
 from typing import List
 from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.websockets import WebSocket
 from iracing.iracing_service import IRacingService
-from unittest.mock import patch
 from pathlib import Path
-import yaml
-import json as jsonlib
 
 test_file = os.getenv("PYIRSDK_TEST_FILE", None)
 

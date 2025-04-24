@@ -20,13 +20,21 @@ make run
 
 ## Services
 
-### Telemetry Service
+### gRPC Services
+
+#### Telemetry Service
 
 Service for retrieving telemetry data from iRacing.
 
-### Broadcast Service
+#### Broadcast Service
 
 Service for sending "broadcast messages" to the iRacing simulation.
+
+### HTTP Service
+
+REST and WebSocket API for retrieving telemetry data.
+
+Start the server and navigate to `http://localhost:8001` for a dashboard, and a link to the API documentation.
 
 ## Development
 
