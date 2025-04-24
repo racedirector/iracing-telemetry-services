@@ -2,7 +2,6 @@ from asyncio import sleep
 import os
 from typing import List
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 from iracing.iracing_service import IRacingService
 
@@ -56,21 +55,6 @@ async def telemetry_websocket(websocket: WebSocket):
         await sleep(1 / fps)
 
     await websocket.close()
-    
-
-
-@app.get("/schema")
-def json_schema():
-    """
-    Returns the telemetry schema.
-    """
-    if not client.check_connection():
-        raise HTTPException(status_code=503, detail="iRacing client is not connected")
-    
-    return {
-        "telemetry": client.telemetry_schema,
-        "session": client.session_schema
-    }
 
 @app.get("/schema/telemetry")
 def telemetry_schema():

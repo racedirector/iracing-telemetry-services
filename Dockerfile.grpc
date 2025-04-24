@@ -17,4 +17,4 @@ RUN make install
 EXPOSE 50051
 
 # Command to run the server using the Makefile
-CMD ["make", "run"]
+CMD ["make", "run-grpc"]

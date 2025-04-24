@@ -1,8 +1,16 @@
 services:
-  app:
-    build: .
+  grpc:
+    build:
+      context: .
+      dockerfile: Dockerfile.grpc
     ports:
       - "50051:50051"
+  http:
+    build:
+      context: .
+      dockerfile: Dockerfile.http
+    ports:
+      - "8001:8001"
   envoy:
     image: envoyproxy/envoy:v1.30-latest
     ports:
