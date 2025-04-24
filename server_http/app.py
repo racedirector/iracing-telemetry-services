@@ -50,14 +50,16 @@ def telemetry(keys: List[str] = Query(..., description="List of telemetry keys t
         "description": "Dump of telemetry data in YML format"
     }
 })
-def dump(json: bool = Query(False, description="Return the dump as JSON")):
+def dump(json: bool = Query(False, description="Return the dump as JSON"), include_session: bool = Query(False, alias="includeSession", description="Include session data in the dump")):
     if not client.check_connection():
         raise HTTPException(status_code=503, detail="iRacing client is not connected")
     
-    session_string = client.get_session_string()
-    session_json = yaml.safe_load(session_string)
     telemetry_dump = client.dump_telemetry()
-    telemetry_dump.update(session_json)
+
+    if include_session:
+        session_string = client.get_session_string()
+        session_json = yaml.safe_load(session_string)
+        telemetry_dump.update(session_json)
 
     if json:
         return Response(content=jsonlib.dumps(telemetry_dump, default=DateEncoder), media_type="application/json")
