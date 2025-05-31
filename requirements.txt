@@ -5,5 +5,5 @@ grpcio-tools==1.71.0
 protobuf==5.29.4
 pyirsdk==1.3.5
 PyYAML==6.0.2
-fastapi==0.110.0
+fastapi==0.115.12
 uvicorn[standard]==0.34.2
