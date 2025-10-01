@@ -34,7 +34,7 @@ async def index():
         "description": "Telemetry data"
     }
 })
-def telemetry(keys: List[str] = Query(..., description="List of telemetry keys to retrieve", example=["PlayerCarIdx", "LapDistPct"])):
+def telemetry(keys: List[str] = Query(..., description="List of telemetry keys to retrieve", examples=["PlayerCarIdx", "LapDistPct"])):
     if not keys:
         raise HTTPException(status_code=400, detail="No keys provided")
     if not client.check_connection():
