@@ -36,7 +36,7 @@ jobs:
           make exe-${{ matrix.svc }}
 
       - name: Upload Executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: iracing-telemetry-server-${{ matrix.svc }}
           path: dist/telemetry-server-${{ matrix.svc }}.exe
